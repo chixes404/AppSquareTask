@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AppSquareTask.Core.Models.Common;
 
 namespace AppSquareTask.Core.Models
 {
-	public class Trip : BaseEntity
+    public class Trip : BaseEntity
 	{
 
 		public string Name { get; set; }
@@ -14,8 +15,8 @@ namespace AppSquareTask.Core.Models
 		public decimal PricePerPerson { get; set; }
 		public int Capacity { get; set; }
 		public DateTime MaxCancellationPeriod { get; set; }
-		public Guid OwnerId { get; set; }
-		public ApplicationUser Owner { get; set; } 
+		public int OwnerId { get; set; }
+		public Owner Owner { get; set; } 
 
 		public int BoatId { get; set; }
 		public Boat Boat { get; set; }

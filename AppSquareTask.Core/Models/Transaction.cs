@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AppSquareTask.Core.Models.Common;
 
 namespace AppSquareTask.Core.Models
 {
-	public class Transaction : BaseEntity
+    public class Transaction : BaseEntity
 	{
 		public decimal Amount { get; set; } // Positive for credits, negative for debits
 		public string Type { get; set; } // "Credit" or "Debit"

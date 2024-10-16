@@ -24,4 +24,8 @@
     <ProjectReference Include="..\AppSquareTask.Core\AppSquareTask.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helper\" />
+  </ItemGroup>
+
 </Project>
