@@ -12,5 +12,7 @@ namespace AppSquareTask.Core.Models
 		public Wallet Wallet { get; set; } // Associated wallet for payments
 		public ICollection<BoatBooking> BoatBookings { get; set; } = new List<BoatBooking>(); // Bookings made by the Customer
 		public ICollection<TripBooking> TripBookings { get; set; } = new List<TripBooking>();
+
+
 	}
 }

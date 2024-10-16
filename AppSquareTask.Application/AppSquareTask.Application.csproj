@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AppSquareTask.Core\AppSquareTask.Core.csproj" />
+  </ItemGroup>
+
 </Project>
