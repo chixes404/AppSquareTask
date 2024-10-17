@@ -12,6 +12,7 @@ namespace AppSquareTask.Core.IRepositories
 	{
 		IRepositoryBase<TEntity>? Repository<TEntity>() where TEntity : BaseEntity;
 		IRepositoryBase<Owner> OwnerRepository { get; }
+		IRepositoryBase<Wallet> WalletRepository { get; }
 		IRepositoryBase<Customer> CustomerRepository { get; }
 		Task<int> SaveAsync();
 	}

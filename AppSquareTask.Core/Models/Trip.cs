@@ -15,6 +15,7 @@ namespace AppSquareTask.Core.Models
 		public decimal PricePerPerson { get; set; }
 		public int Capacity { get; set; }
 		public DateTime MaxCancellationPeriod { get; set; }
+		public Status Status { get; set; } = Status.Pending; // "Pending", "Approved", "Rejected"
 		public int OwnerId { get; set; }
 		public Owner Owner { get; set; } 
 

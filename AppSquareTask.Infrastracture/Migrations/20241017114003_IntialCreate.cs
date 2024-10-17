@@ -1,13 +1,14 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace AppSquareTask.Infrastracture.Migrations
 {
     /// <inheritdoc />
-    public partial class intialCreate : Migration
+    public partial class IntialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -251,8 +252,8 @@ namespace AppSquareTask.Infrastracture.Migrations
                         name: "FK_Boats_Owners_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "Owners",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id"
+                        );
                 });
 
             migrationBuilder.CreateTable(
@@ -306,15 +307,13 @@ namespace AppSquareTask.Infrastracture.Migrations
                         column: x => x.BoatId,
                         principalTable: "Boats",
                         principalColumn: "Id",
-					onDelete: ReferentialAction.Cascade); 
-
-					  
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_BoatBookings_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id"
-                        );
+                       );
                 });
 
             migrationBuilder.CreateTable(
@@ -347,7 +346,7 @@ namespace AppSquareTask.Infrastracture.Migrations
                         column: x => x.OwnerId,
                         principalTable: "Owners",
                         principalColumn: "Id"
-                        );
+                      );
                 });
 
             migrationBuilder.CreateTable(
@@ -397,13 +396,23 @@ namespace AppSquareTask.Infrastracture.Migrations
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id"
-                       );
+                     );
                     table.ForeignKey(
                         name: "FK_TripBookings_Trips_TripId",
                         column: x => x.TripId,
                         principalTable: "Trips",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { new Guid("b4018cb5-755e-468b-9802-a9917c37730e"), null, "Owner", "OWNER" },
+                    { new Guid("bdebdb78-4dc9-40ac-b319-f4e5e7bc3503"), null, "Admin", "ADMIN" },
+                    { new Guid("ee30e20d-5851-4f96-bc13-6aa7c73ce07c"), null, "Customer", "CUSTOMER" }
                 });
 
             migrationBuilder.CreateIndex(

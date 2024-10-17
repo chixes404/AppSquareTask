@@ -60,6 +60,7 @@ namespace AppSquareTask.Application.Services
 
 			var result = await _userManager.CreateAsync(user, model.Password);
 
+
 			if (!result.Succeeded)
 			{
 				return new AuthResponse
@@ -71,11 +72,19 @@ namespace AppSquareTask.Application.Services
 			}
 
 			await _userManager.AddToRoleAsync(user, "Owner");  // Create the owner record in the database
+			var wallet = new Wallet
+			{
+				UserId = user.Id,
+				Balance=0
+
+			};
+			await _unitOfWork.WalletRepository.CreateAsync(wallet);
+
 
 			var owner = new Owner
 			{
 				UserId = user.Id,
-				Wallet = new Wallet()	
+			
 			};
 			await _unitOfWork.OwnerRepository.CreateAsync(owner);
 			await _unitOfWork.SaveAsync();
@@ -114,13 +123,23 @@ namespace AppSquareTask.Application.Services
 				};
 			}
 
-			await _userManager.AddToRoleAsync(user, "Customer");  
+			await _userManager.AddToRoleAsync(user, "Customer");
+
+			var wallet = new Wallet
+			{
+				UserId = user.Id,
+				Balance = 0
+
+			};
+			await _unitOfWork.WalletRepository.CreateAsync(wallet);
+
 
 			var customer = new Customer
 			{
 				UserId = user.Id,
-				Wallet = new Wallet()
 			};
+
+
 			await _unitOfWork.CustomerRepository.CreateAsync(customer);
 			await _unitOfWork.SaveAsync();
 
@@ -172,50 +191,7 @@ namespace AppSquareTask.Application.Services
 		}
 
 
-		public async Task<bool> ApproveOwnerAsync(int ownerId)
-		{
-			var owner = await _unitOfWork.OwnerRepository.GetById(ownerId);
-			if (owner == null)
-			{
-				throw new KeyNotFoundException($"Owner with ID {ownerId} not found.");
-			}
-			var user = await _userManager.FindByIdAsync(owner.UserId.ToString());
-			if (user == null)
-			{
-				throw new KeyNotFoundException($" There Is No User with OwnerId : {ownerId} ");
 
-			}
-			// Approve the owner by updating the user's status
-			user.Status = Status.Approved;
-			await _userManager.UpdateAsync(user);
-			await _unitOfWork.SaveAsync();
-
-			return true;
-		}
-
-		// Method to reject owner registration
-		public async Task<bool> RejectOwnerAsync(int ownerId)
-		{
-			var owner = await _unitOfWork.OwnerRepository.GetById(ownerId);
-			if (owner == null)
-			{
-				throw new KeyNotFoundException($"Owner with ID {ownerId} not found.");
-			}
-
-			var user = await _userManager.FindByIdAsync(owner.UserId.ToString());
-			if (user == null)
-			{
-				throw new KeyNotFoundException($" There Is No User with OwnerId : {ownerId} ");
-
-			}
-
-			// Reject the owner by updating the user's status
-			user.Status = Status.Rejected;
-			await _userManager.UpdateAsync(user);
-			await _unitOfWork.SaveAsync();
-
-			return true;
-		}
 
 	}
 }

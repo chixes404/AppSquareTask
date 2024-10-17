@@ -15,6 +15,7 @@ namespace AppSquareTask.Infrastracture.Repositories
 		private readonly ApplicationDbContext _context;
 		private IRepositoryBase<Owner> _ownerRepository;
 		private IRepositoryBase<Customer> _customerRepository;
+		private IRepositoryBase<Wallet> _walletRepository;
 
 		private Dictionary<string, object> _repositories = new Dictionary<string, object>();
 		public UnitOfWork(ApplicationDbContext context)
@@ -28,6 +29,10 @@ namespace AppSquareTask.Infrastracture.Repositories
 			get { return _ownerRepository ??= new RepositoryBase<Owner>(_context); }
 		}
 
+		public IRepositoryBase<Wallet> WalletRepository
+		{
+			get { return _walletRepository ??= new RepositoryBase<Wallet>(_context); }
+		}
 		public IRepositoryBase<Customer> CustomerRepository	
 		{
 			get { return _customerRepository ??= new RepositoryBase<Customer>(_context); }

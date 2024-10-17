@@ -18,10 +18,10 @@ namespace AppSquareTask.Core.Models.Common
 
         [Required]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm tt}", ApplyFormatInEditMode = true)]
-        public DateTime Created { get; set; } = DateTime.Now;
+        public DateTime? Created { get; set; } = DateTime.Now;
 
         [Required]
         [Display(Name = "Created By")]
-        public Guid CreatedBy { get; set; }
+        public Guid ?CreatedBy { get; set; }
     }
 }

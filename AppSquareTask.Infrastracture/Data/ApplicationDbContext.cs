@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using M = AppSquareTask.Core.Models;
@@ -12,7 +13,7 @@ using M = AppSquareTask.Core.Models;
 
 namespace AppSquareTask.Infrastracture.Data
 {
-	public class ApplicationDbContext : IdentityDbContext<M.ApplicationUser, M.Role, Guid>
+	public partial class ApplicationDbContext : IdentityDbContext<M.ApplicationUser, M.Role, Guid>
 	{
 
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -43,19 +44,7 @@ namespace AppSquareTask.Infrastracture.Data
 
 
 
-			builder.Entity<Wallet>()
-	.HasOne(w => w.owner)
-	.WithOne(o => o.Wallet)
-	.HasForeignKey<Wallet>(w => w.ownerId)
-	.OnDelete(DeleteBehavior.NoAction); // Prevent cascade delete
-
-
-			builder.Entity<Wallet>()
-	.HasOne(w => w.customer)
-	.WithOne(o => o.Wallet)
-	.HasForeignKey<Wallet>(w => w.CustomerId)
-	.OnDelete(DeleteBehavior.NoAction); // Prevent cascade delete
-
+			
 
 			// Define other relationships
 			builder.Entity<Owner>()
@@ -69,9 +58,23 @@ namespace AppSquareTask.Infrastracture.Data
 				.WithOne(bb => bb.Customer)
 				.HasForeignKey(bb => bb.CustomerId)
 				.OnDelete(DeleteBehavior.Cascade);
+
+
+
+
+
+
+
+
+
+
+
+			OnModelCreatingPartialDataSeed(builder);
+
 		}
 
 
+		partial void OnModelCreatingPartialDataSeed(ModelBuilder modelBuilder);
 
 	}
 }

@@ -19,6 +19,13 @@ using static System.Net.Mime.MediaTypeNames;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using System.Reflection;
+using AppSquareTask.Infrastracture.Helper;
+using AppSquareTask.Application.Responses;
+using FluentValidation.AspNetCore;
+using MediatR;
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using System.Runtime.Loader;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,7 +87,8 @@ builder.Services.AddControllers().
 
 
 builder.Services.AddSignalR();
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly())); 
+builder.Services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+
 builder.Services.AddSwaggerGen(options =>
 {
 	options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "AppSquare API", Version = "v1" });
@@ -114,9 +122,18 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ApiResponseHandler>();
+builder.Services.AddScoped<JwtTokenGenerator>(); 
 builder.Services.AddScoped<IOwnerService, OwnerService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddFluentValidationAutoValidation()
+	.AddFluentValidationClientsideAdapters()
+	.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+// Register ValidationBehavior
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 
 builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
@@ -125,25 +142,33 @@ builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+
+
+
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowAll",
+		b => b.AllowAnyMethod()
+	.AllowAnyHeader()
+	.AllowAnyOrigin());
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
-	app.UseSwaggerUI(
-		   c =>
-		   {
-			   c.SwaggerEndpoint("/swagger/v1/swagger.json", "AppSquare APi");
-			   c.RoutePrefix = string.Empty;
-			   c.DisplayRequestDuration();
-		   }
-	   );
+	app.UseSwaggerUI(c =>
+	{
+		string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
+		c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "AppSquare API");
+	}); ;
 }
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
 
-
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 

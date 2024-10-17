@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace AppSquareTask.Application.Services
@@ -14,11 +15,13 @@ namespace AppSquareTask.Application.Services
 	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly IEmailService _emailService;
 
-		public OwnerService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+		public OwnerService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, IEmailService emailService)
 		{
 			_unitOfWork = unitOfWork;
 			_userManager = userManager;
+			_emailService = emailService;
 		}
 
 		public async Task<Owner> GetOwnerByIdAsync(int ownerId)
@@ -41,6 +44,9 @@ namespace AppSquareTask.Application.Services
 			await _userManager.UpdateAsync(user);
 			await _unitOfWork.SaveAsync();
 
+			await _emailService.SendEmailAsync(user.Email!, "Admin Approved Your Registeration",
+			   "you can login now");
+
 			return true;
 		}
 
@@ -57,6 +63,10 @@ namespace AppSquareTask.Application.Services
 			user.Status = Status.Rejected;
 			await _userManager.UpdateAsync(user);
 			await _unitOfWork.SaveAsync();
+
+
+			await _emailService.SendEmailAsync(user.Email!, "Admin Rejected Your Registeration",
+			   "please call the customer support");
 
 			return true;
 		}
