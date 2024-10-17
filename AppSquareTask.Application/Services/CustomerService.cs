@@ -11,7 +11,7 @@ namespace AppSquareTask.Application.Services
 {
 	public class CustomerService : ICustomerService
 	{
-		private readonly IUnitOfWork _unitOfWork;
+		private readonly IUnitOfWork _unitOfWork; 
 
 		public CustomerService(IUnitOfWork unitOfWork)
 		{

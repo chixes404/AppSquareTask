@@ -172,7 +172,50 @@ namespace AppSquareTask.Application.Services
 		}
 
 
+		public async Task<bool> ApproveOwnerAsync(int ownerId)
+		{
+			var owner = await _unitOfWork.OwnerRepository.GetById(ownerId);
+			if (owner == null)
+			{
+				throw new KeyNotFoundException($"Owner with ID {ownerId} not found.");
+			}
+			var user = await _userManager.FindByIdAsync(owner.UserId.ToString());
+			if (user == null)
+			{
+				throw new KeyNotFoundException($" There Is No User with OwnerId : {ownerId} ");
 
+			}
+			// Approve the owner by updating the user's status
+			user.Status = Status.Approved;
+			await _userManager.UpdateAsync(user);
+			await _unitOfWork.SaveAsync();
+
+			return true;
+		}
+
+		// Method to reject owner registration
+		public async Task<bool> RejectOwnerAsync(int ownerId)
+		{
+			var owner = await _unitOfWork.OwnerRepository.GetById(ownerId);
+			if (owner == null)
+			{
+				throw new KeyNotFoundException($"Owner with ID {ownerId} not found.");
+			}
+
+			var user = await _userManager.FindByIdAsync(owner.UserId.ToString());
+			if (user == null)
+			{
+				throw new KeyNotFoundException($" There Is No User with OwnerId : {ownerId} ");
+
+			}
+
+			// Reject the owner by updating the user's status
+			user.Status = Status.Rejected;
+			await _userManager.UpdateAsync(user);
+			await _unitOfWork.SaveAsync();
+
+			return true;
+		}
 
 	}
 }

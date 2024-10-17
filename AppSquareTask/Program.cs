@@ -14,6 +14,11 @@ using AppSquareTask.Application.Services;
 using AppSquareTask.Core.IRepositories;
 using AppSquareTask.Infrastracture.Repositories;
 using AppSquareTask.Infrastracture.Hubs;
+using AppSquareTask.Middlewares;
+using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +80,7 @@ builder.Services.AddControllers().
 
 
 builder.Services.AddSignalR();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly())); 
 builder.Services.AddSwaggerGen(options =>
 {
 	options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "AppSquare API", Version = "v1" });
@@ -125,9 +131,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 	app.UseSwagger();
-	app.UseSwaggerUI();
+	app.UseSwaggerUI(
+		   c =>
+		   {
+			   c.SwaggerEndpoint("/swagger/v1/swagger.json", "AppSquare APi");
+			   c.RoutePrefix = string.Empty;
+			   c.DisplayRequestDuration();
+		   }
+	   );
 }
-
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
 
 

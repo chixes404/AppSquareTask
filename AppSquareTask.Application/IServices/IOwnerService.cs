@@ -9,10 +9,13 @@ namespace AppSquareTask.Application.IServices
 {
 	public interface IOwnerService
 	{
-		Task<Owner> GetOwnerByIdAsync(int ownerId);
-		Task CreateOwnerAsync(Owner owner, CancellationToken cancellationToken);
 		Task<IEnumerable<Owner>> GetAllOwnersAsync();
+
+		Task<Owner> GetOwnerByIdAsync(int ownerId);
+		Task<bool> ApproveOwnerAsync(int ownerId);
+		Task<bool> RejectOwnerAsync(int ownerId);
+		Task CreateOwnerAsync(Owner owner, CancellationToken cancellationToken);
 		Task UpdateOwnerAsync(Owner owner);
-		Task DeleteOwnerAsync(int ownerId);
+		Task DeleteOwnerAsync(int ownerId);  
 	}
 }
