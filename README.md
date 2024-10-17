@@ -94,8 +94,8 @@ Steps
 
     bash
 
-git clone https://github.com/your-username/boat-trip-booking-system.git
-cd boat-trip-booking-system
+git clone [https://github.com/your-username/boat-trip-booking-system](https://github.com/chixes404/AppSquareTask/).git
+
 
 Setup Database:
 
