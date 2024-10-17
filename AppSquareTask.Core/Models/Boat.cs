@@ -11,7 +11,10 @@ namespace AppSquareTask.Core.Models
 	{
 		public string Name { get; set; }
 		public string Description { get; set; }
-		public bool IsApproved { get; set; } = false;
+		public decimal PricePerPerson { get; set; }
+		public int Capacity { get; set; }
+		public DateTime MaxCancellationPeriod { get; set; }
+		public Status Status { get; set; } = Status.Pending; // "Pending", "Approved", "Rejected"
 		public int OwnerId { get; set; }
 		public Owner Owner { get; set; } // Owner of the boat (a User with Role "Owner")
 		public ICollection<Trip> Trips { get; set; }

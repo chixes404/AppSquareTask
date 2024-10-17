@@ -90,7 +90,6 @@ namespace AppSquareTask.Application.Services
 			await _unitOfWork.SaveAsync();
 
 
-			//await _notificationService.NotifyAdminAsync($"A new owner has registered: {user.Email}");
 
 			return new AuthResponse
 			{
