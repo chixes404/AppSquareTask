@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppSquareTask.Application.MediatrHandelr.Trip.Queries.GetAllTrips;
 
-public class GetPaginatedTripsQueryHandler : IRequestHandler<GetPaginatedTripsCommand, PagedList<TripDto>>
+public class GetPaginatedTripsQueryHandler : IRequestHandler<GetPaginatedTripsQuery, PagedList<TripDto>>
 {
 	private readonly ITripService _tripService;
 	private readonly IMapper _mapper;
@@ -18,7 +18,7 @@ public class GetPaginatedTripsQueryHandler : IRequestHandler<GetPaginatedTripsCo
 		_mapper = mapper;
 	}
 
-	public async Task<PagedList<TripDto>> Handle(GetPaginatedTripsCommand request, CancellationToken cancellationToken)
+	public async Task<PagedList<TripDto>> Handle(GetPaginatedTripsQuery request, CancellationToken cancellationToken)
 	{
 		var pagedTrips = await _tripService.GetAllTripsPaginatedAsync(request.PageNumber, request.PageSize);
 

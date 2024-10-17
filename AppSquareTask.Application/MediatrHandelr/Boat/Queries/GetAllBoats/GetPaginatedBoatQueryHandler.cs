@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppSquareTask.Application.MediatrHandelr.Boat.Queries.GetAllBoats;
 
-public class GetPaginatedBoatsQueryHandler : IRequestHandler<GetPaginatedBoatsCommand, PagedList<BoatDto>>
+public class GetPaginatedBoatsQueryHandler : IRequestHandler<GetPaginatedBoatsQuery, PagedList<BoatDto>>
 {
 	private readonly IBoatService _boatService;
 	private readonly IMapper _mapper;
@@ -18,7 +18,7 @@ public class GetPaginatedBoatsQueryHandler : IRequestHandler<GetPaginatedBoatsCo
 		_mapper = mapper;
 	}
 
-	public async Task<PagedList<BoatDto>> Handle(GetPaginatedBoatsCommand request, CancellationToken cancellationToken)
+	public async Task<PagedList<BoatDto>> Handle(GetPaginatedBoatsQuery request, CancellationToken cancellationToken)
 	{
 		var pagedBoats = await _boatService.GetAllBoatsPaginatedAsync(request.PageNumber, request.PageSize);
 
