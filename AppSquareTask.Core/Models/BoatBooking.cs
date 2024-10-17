@@ -11,12 +11,14 @@ namespace AppSquareTask.Core.Models
 	{
 		public int BoatId { get; set; }
 		public int CustomerId { get; set; }
-		public string Purpose { get; set; } // Purpose of booking (e.g., "Private Event", "Fishing", etc.)
-		public string AdditionalServices { get; set; } // E.g., catering, special crew, etc.
+		public int Capacity { get; set; }
+		public decimal TotalPrice { get; set; }
+		public string Purpose { get; set; } 
 		public DateTime BookingDate { get; set; }
+		public bool IsPaid { get; set; }
 		public bool IsCanceled { get; set; } = false;
 		public DateTime? CancellationDate { get; set; }
-
+		public bool IsRefunded { get; set; } = false;
 		public Boat Boat { get; set; }
 		public Customer Customer { get; set; } // The customer booking the boat
 

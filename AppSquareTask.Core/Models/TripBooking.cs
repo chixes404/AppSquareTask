@@ -14,8 +14,10 @@ namespace AppSquareTask.Core.Models
 		public int NumberOfParticipants { get; set; }
 		public decimal TotalPrice { get; set; }
 		public bool IsCanceled { get; set; } = false;
+		public bool IsPaid { get; set; }
 		public DateTime BookingDate { get; set; }
 		public DateTime? CancellationDate { get; set; }
+		public bool IsRefunded { get; set; } = false; // Track if refunded
 		public Customer Customer { get; set; }
 		public Trip Trip { get; set; }
 

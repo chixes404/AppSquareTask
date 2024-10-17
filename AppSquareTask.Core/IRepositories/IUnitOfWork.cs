@@ -16,6 +16,8 @@ namespace AppSquareTask.Core.IRepositories
 		IRepositoryBase<Customer> CustomerRepository { get; }
 		IRepositoryBase<Trip> TripRepository { get; }
 		IRepositoryBase<Boat> BoatRepository { get; }
+		IRepositoryBase<TripBooking> TripBookingRepository { get; }
+		IRepositoryBase<BoatBooking> BoatBookingRepository { get; }
 		Task<int> SaveAsync();
 	}
 }

@@ -12,7 +12,7 @@ namespace AppSquareTask.Core.Models
 		public decimal Balance { get; set; } = 0; // Default balance
 	      public Guid UserId {  get; set; }
 		public ICollection<Transaction> Transactions { get; set; } // Transactions related to this wallet
-		public ICollection<ApplicationUser> User { get; set; } // Transactions related to this wallet
+		public  virtual ApplicationUser User { get; set; } // Transactions related to this wallet
 	}
 
 }

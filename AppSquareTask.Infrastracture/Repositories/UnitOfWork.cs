@@ -18,6 +18,8 @@ namespace AppSquareTask.Infrastracture.Repositories
 		private IRepositoryBase<Wallet> _walletRepository;
 		private IRepositoryBase<Trip> _tripRepository;
 		private IRepositoryBase<Boat> _boatRepository;
+		private IRepositoryBase<BoatBooking> _boatBookingRepository;
+		private IRepositoryBase<TripBooking> _tripBookingRepository;
 
 		private Dictionary<string, object> _repositories = new Dictionary<string, object>();
 		public UnitOfWork(ApplicationDbContext context)
@@ -50,6 +52,16 @@ namespace AppSquareTask.Infrastracture.Repositories
 		public IRepositoryBase<Boat> BoatRepository
 		{
 			get { return _boatRepository ??= new RepositoryBase<Boat>(_context); }
+		}
+
+		public IRepositoryBase<BoatBooking> BoatBookingRepository
+		{
+			get { return _boatBookingRepository ??= new RepositoryBase<BoatBooking>(_context); }
+		}
+
+		public IRepositoryBase<TripBooking> TripBookingRepository
+		{
+			get { return _tripBookingRepository ??= new RepositoryBase<TripBooking>(_context); }
 		}
 		public IRepositoryBase<TEntity>? Repository<TEntity>() where TEntity : BaseEntity
 		{

@@ -122,6 +122,7 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ApiResponseHandler>();
 builder.Services.AddScoped<JwtTokenGenerator>(); 
 builder.Services.AddScoped<IOwnerService, OwnerService>();
