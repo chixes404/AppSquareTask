@@ -17,6 +17,7 @@ namespace AppSquareTask.Application.MediatrHandelr.Trip
 		public DateTime MaxCancellationPeriod { get; set; }
 		public Status Status { get; set; } = Status.Pending; 
 		public int OwnerId { get; set; }
+		public string? OwnerName { get; set; }
 
 		public int BoatId { get; set; }
 

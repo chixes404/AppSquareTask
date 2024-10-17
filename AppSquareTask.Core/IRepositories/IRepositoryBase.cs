@@ -1,10 +1,6 @@
 ﻿using AppSquareTask.Core.Models.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace AppSquareTask.Core.IRepositories
 {
@@ -17,6 +13,26 @@ namespace AppSquareTask.Core.IRepositories
 		Task<T> CreateAsync(T entity);
 		Task<T> UpdateAsync(T entity);
 		Task DeleteAsync(T entity);
+
+
+
+		// Query Operations
+		Task<IEnumerable<T>> FindAsync(
+			Expression<Func<T, bool>> predicate,
+			Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+			CancellationToken cancellationToken = default);
+		public IQueryable<T> Find(
+			Expression<Func<T, bool>> predicate,
+			Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null);
+
+		Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
+		Task<int> CountAsync(Expression<Func<T, bool>> predicate);
+
+	
+		// Specification Pattern
+		Task<IEnumerable<T>> FindBySpecificationAsync(
+			ISpecification<T> specification,
+			CancellationToken cancellationToken = default);
 	}
 
 }

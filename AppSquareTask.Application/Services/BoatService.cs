@@ -1,9 +1,12 @@
-﻿using AppSquareTask.Application.IServices;
+﻿using AppSquareTask.Application.Dtos;
+using AppSquareTask.Application.IServices;
 using AppSquareTask.Application.Responses;
 using AppSquareTask.Core.IRepositories;
 using AppSquareTask.Core.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AppSquareTask.Application.Services
@@ -59,7 +62,10 @@ namespace AppSquareTask.Application.Services
 
 		public async Task<Boat> GetBoatByIdAsync(int boatId)
 		{
-			var boat = await _unitOfWork.BoatRepository.GetById(boatId);
+			var boats = await _unitOfWork.Repository<Boat>()
+						  .FindAsync(s => s.Id == boatId, include: q => q.Include(s => s.Owner));
+			var boat = boats.FirstOrDefault(); 
+			
 			if (boat == null || boat.Status != Status.Approved)
 			{
 				throw new KeyNotFoundException("Boat not found or not approved.");
@@ -69,14 +75,15 @@ namespace AppSquareTask.Application.Services
 
 
 
-		public async Task<IEnumerable<Boat>> GetBoatsByOwnerAsync(int ownerId)
+		public async Task<IEnumerable<ResponseBoatDto>> GetBoatsByOwnerAsync(int ownerId)
 		{
 			// Fetch boats by OwnerId
-			var boats = await _unitOfWork.BoatRepository.GetAllAsync();
-			return boats.Where(boat => boat.OwnerId == ownerId && boat.Status == Status.Approved);
+			var boats = await _unitOfWork.Repository<Boat>()
+				.FindAsync(s => true, include: q => q.Include(s => s.Owner));
+			return (IEnumerable<ResponseBoatDto>)boats.Where(boat => boat.OwnerId == ownerId && boat.Status == Status.Approved);
 		}
 
-		public async Task<PagedList<Boat>> GetAllBoatsPaginatedAsync(int pageNumber, int pageSize)
+		public async Task<PagedList<ResponseBoatDto>> GetAllBoatsPaginatedAsync(int pageNumber, int pageSize)
 		{
 			var allBoats = await _unitOfWork.BoatRepository.GetAllAsync();
 			var approvedBoats = allBoats.Where(boat => boat.Status == Status.Approved);
@@ -84,7 +91,7 @@ namespace AppSquareTask.Application.Services
 			var totalCount = approvedBoats.Count(); // Count approved boats
 			var boatsToReturn = approvedBoats.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList(); // Get the requested page
 
-			return new PagedList<Boat>(boatsToReturn, pageNumber, pageSize, totalCount); // Create PagedList
+			return new PagedList<ResponseBoatDto>((IEnumerable<ResponseBoatDto>)boatsToReturn, pageNumber, pageSize, totalCount); // Create PagedList
 		}
 	}
 }

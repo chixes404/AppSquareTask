@@ -1,7 +1,9 @@
-﻿using AppSquareTask.Application.IServices;
+﻿using AppSquareTask.Application.Dtos;
+using AppSquareTask.Application.IServices;
 using AppSquareTask.Application.Responses;
 using AppSquareTask.Core.IRepositories;
 using AppSquareTask.Core.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -59,7 +61,9 @@ namespace AppSquareTask.Application.Services
 
 		public async Task<Trip> GetTripByIdAsync(int tripId)
 		{
-			var trip = await _unitOfWork.TripRepository.GetById(tripId);
+			var trips = await _unitOfWork.Repository<Trip>()
+									  .FindAsync(s => s.Id == tripId, include: q => q.Include(s => s.Owner));
+			var trip = trips.FirstOrDefault(); 
 			if (trip == null || trip.Status != Status.Approved)
 			{
 				throw new KeyNotFoundException("Trip not found or not approved.");
@@ -69,14 +73,15 @@ namespace AppSquareTask.Application.Services
 
 
 
-		public async Task<IEnumerable<Trip>> GetTripsByOwnerAsync(int ownerId)
+		public async Task<IEnumerable<ResponseTripDto>> GetTripsByOwnerAsync(int ownerId)
 		{
 			// Fetch trips by OwnerId
-			var trips = await _unitOfWork.TripRepository.GetAllAsync();
-			return trips.Where(trip => trip.OwnerId == ownerId && trip.Status == Status.Approved);
+			var trips = await _unitOfWork.Repository<Trip>()
+							.FindAsync(s => true, include: q => q.Include(s => s.Owner)); 
+			return (IEnumerable<ResponseTripDto>)trips.Where(trip => trip.OwnerId == ownerId && trip.Status == Status.Approved);
 		}
 
-		public async Task<PagedList<Trip>> GetAllTripsPaginatedAsync(int pageNumber, int pageSize)
+		public async Task<PagedList<ResponseTripDto>> GetAllTripsPaginatedAsync(int pageNumber, int pageSize)
 		{
 			var allTrips = await _unitOfWork.TripRepository.GetAllAsync();
 			var approvedTrips = allTrips.Where(trip => trip.Status == Status.Approved);
@@ -84,7 +89,7 @@ namespace AppSquareTask.Application.Services
 			var totalCount = approvedTrips.Count(); // Count approved trips
 			var tripsToReturn = approvedTrips.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList(); // Get the requested page
 
-			return new PagedList<Trip>(tripsToReturn, pageNumber, pageSize, totalCount); // Create PagedList
+			return new PagedList<ResponseTripDto>((IEnumerable<ResponseTripDto>)tripsToReturn, pageNumber, pageSize, totalCount); // Create PagedList
 		}
 	}
 }
