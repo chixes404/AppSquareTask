@@ -11,6 +11,7 @@ namespace AppSquareTask.Core.Models
 	{
 		public Status Status { get; set; } = Status.Pending; // "Pending", "Approved", "Rejected"
 
+		public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
 		public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 	}
 }

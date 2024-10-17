@@ -22,7 +22,14 @@ namespace AppSquareTask.Infrastracture.Data
 		}
 
 
-		
+
+		public DbSet<ApplicationUser> Users { get; set; }
+		public DbSet<Role> Roles { get; set; }
+
+		public DbSet<Owner> Owners { get; set; }
+		public DbSet<Customer> Customers { get; set; }
+
+
 
 
 		protected override void OnModelCreating(ModelBuilder builder)
