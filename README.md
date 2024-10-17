@@ -64,8 +64,7 @@ Steps
 
     bash
 
-git clone (https://github.com/chixes404/AppSquareTask.git)
-
+git clone https://github.com/chixes404/AppSquareTask.git
 
 Setup Database:
 
