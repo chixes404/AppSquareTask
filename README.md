@@ -9,7 +9,7 @@
 * Trip Management: Owners can create trips with detailed descriptions, prices, and additional services.
 * Wallet System: Customers and Owners can manage wallets for payments and refunds.
 * Booking System: Customers can book trips or boats, select services, and make payments through the platform.
-* Logging: Serilog integration for tracking user actions and system events.
+* Logging: there is no Time to handle it 
 * Error Handling: Comprehensive error handling to ensure robustness and user-friendly feedback.
 
 
@@ -21,7 +21,6 @@
 * SQL Server: For storing all data.
 * JWT: For secure authentication and authorization.
 * Fleunt Validation : allows for clear and concise validation rules while keeping the logic clean and separated from the core domain models.
-* Serilog: For logging system activities and errors.
 * Signalr : To send Notifications
 * Swagger: For API documentation.
 * Cqrs and Metidatr : to seprate read and write and mediatr manage the request 
