@@ -20,17 +20,12 @@ namespace AppSquareTask.Application.MediatrHandelr.Boat.Commands.CreateBoat
 				.MaximumLength(2000).WithMessage("Boat description must not exceed 2000 characters.");
 
 
-			RuleFor(x => x.PricePerPerson)
+			RuleFor(x => x.Price)
 				.GreaterThanOrEqualTo(0).WithMessage("Price must be greater than or equal to 0.");
 
 		
 			RuleFor(x => x.OwnerId)
 				.NotEmpty().WithMessage("Owner ID is required.");
-
-			RuleFor(x => x.MaxCancellationPeriod)
-			 .NotEmpty().WithMessage("Max cancellation period is required.")
-			 .Must(maxCancellationPeriod => maxCancellationPeriod > DateTime.UtcNow)
-			 .WithMessage("Max cancellation period must be in the future.");
 
 			RuleFor(x => x.Capacity)
 				.NotEmpty().WithMessage("Capacity is required.");

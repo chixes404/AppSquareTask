@@ -3,6 +3,8 @@ using AppSquareTask.Application.IServices;
 using AppSquareTask.Application.Responses;
 using AppSquareTask.Core.IRepositories;
 using AppSquareTask.Core.Models;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,15 +16,21 @@ namespace AppSquareTask.Application.Services
 	public class BoatService : IBoatService
 	{
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IMapper _mapper;
+		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly IEmailService _emailService;
 
-		public BoatService(IUnitOfWork unitOfWork)
+
+		public BoatService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager , IEmailService emailService)
 		{
 			_unitOfWork = unitOfWork;
+			_mapper = mapper;
+			_userManager = userManager;
+			_emailService = emailService;
 		}
 
 		public async Task<Boat> CreateBoatAsync(Boat boat)
 		{
-			// Set the boat status to Pending by default
 			boat.Status = Status.Pending;
 
 			await _unitOfWork.BoatRepository.CreateAsync(boat);
@@ -42,7 +50,7 @@ namespace AppSquareTask.Application.Services
 			// Update properties as needed
 			existingBoat.Name = boat.Name;
 			existingBoat.Description = boat.Description;
-			existingBoat.PricePerPerson = boat.PricePerPerson;
+			existingBoat.Price = boat.Price;
 			existingBoat.Capacity = boat.Capacity;
 			existingBoat.Status = boat.Status;
 
@@ -73,25 +81,87 @@ namespace AppSquareTask.Application.Services
 			return boat;
 		}
 
-
-
 		public async Task<IEnumerable<ResponseBoatDto>> GetBoatsByOwnerAsync(int ownerId)
 		{
-			// Fetch boats by OwnerId
 			var boats = await _unitOfWork.Repository<Boat>()
-				.FindAsync(s => true, include: q => q.Include(s => s.Owner));
-			return (IEnumerable<ResponseBoatDto>)boats.Where(boat => boat.OwnerId == ownerId && boat.Status == Status.Approved);
+				.FindAsync(boat => boat.OwnerId == ownerId && boat.Status == Status.Approved,
+						   include: q => q.Include(boat => boat.Owner));
+
+			var mappedBoats = boats.Select(boat => _mapper.Map<ResponseBoatDto>(boat));
+
+			return mappedBoats;
 		}
+
 
 		public async Task<PagedList<ResponseBoatDto>> GetAllBoatsPaginatedAsync(int pageNumber, int pageSize)
 		{
-			var allBoats = await _unitOfWork.BoatRepository.GetAllAsync();
-			var approvedBoats = allBoats.Where(boat => boat.Status == Status.Approved);
+			var query = _unitOfWork.BoatRepository.Query()
+				.Where(boat => boat.Status == Status.Approved);
 
-			var totalCount = approvedBoats.Count(); // Count approved boats
-			var boatsToReturn = approvedBoats.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList(); // Get the requested page
+			var totalCount = await query.CountAsync(); 
+			var boatsToReturn = await query.Skip((pageNumber - 1) * pageSize)
+										   .Take(pageSize)
+										   .ToListAsync(); 
 
-			return new PagedList<ResponseBoatDto>((IEnumerable<ResponseBoatDto>)boatsToReturn, pageNumber, pageSize, totalCount); // Create PagedList
+			var mappedBoats = boatsToReturn.Select(boat => _mapper.Map<ResponseBoatDto>(boat));
+
+			return new PagedList<ResponseBoatDto>(mappedBoats, pageNumber, pageSize, totalCount);
 		}
+
+
+		public async Task<bool> ApproveBoatAsync(int boatId)
+		{
+			var boat = await _unitOfWork.BoatRepository.GetById(boatId);
+			if (boat == null) return false; 
+
+			boat.Status = Status.Approved;
+
+			await _unitOfWork.SaveAsync();
+
+			var owner = await _unitOfWork.OwnerRepository.GetById(boat.OwnerId);
+			if (owner == null) return false; 
+
+			var user = await _userManager.FindByIdAsync(owner.UserId.ToString());
+			if (user == null) return false; 
+
+			await _emailService.SendEmailAsync(user.Email!, "Admin Approved Your Boat",
+			   "Your boat has been approved and is now available for booking.");
+
+			return true; 
+		}
+
+
+
+		public async Task<bool> RejectBoatAsync(int boatId)
+		{
+			var boat = await _unitOfWork.BoatRepository.GetById(boatId);
+			if (boat == null) return false; 
+
+			boat.Status = Status.Rejected;
+			await _unitOfWork.SaveAsync();
+
+			var owner = await _unitOfWork.OwnerRepository.GetById(boat.OwnerId);
+			if (owner == null) return false;
+
+			var user = await _userManager.FindByIdAsync(owner.UserId.ToString());
+			if (user == null) return false; 
+
+			await _emailService.SendEmailAsync(user.Email!, "Admin Rejected Your Boat",
+			   "Your boat has been rejected. Please call customer support for further assistance.");
+
+			return true; 
+		}
+
+
+
+
+
+
+
+
+
+
+
+
 	}
 }

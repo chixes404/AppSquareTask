@@ -15,6 +15,7 @@ namespace AppSquareTask.Core.IRepositories
 		Task DeleteAsync(T entity);
 
 
+		IQueryable<T> Query();
 
 		// Query Operations
 		Task<IEnumerable<T>> FindAsync(

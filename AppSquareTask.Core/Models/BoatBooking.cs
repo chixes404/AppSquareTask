@@ -11,8 +11,7 @@ namespace AppSquareTask.Core.Models
 	{
 		public int BoatId { get; set; }
 		public int CustomerId { get; set; }
-		public int Capacity { get; set; }
-		public decimal TotalPrice { get; set; }
+		public decimal Price { get; set; }
 		public string Purpose { get; set; } 
 		public DateTime BookingDate { get; set; }
 		public bool IsPaid { get; set; }

@@ -18,5 +18,9 @@ namespace AppSquareTask.Application.IServices
 		Task<Boat> CreateBoatAsync(Boat boat); // Return Boat after creation
 		Task<Boat> UpdateBoatAsync(Boat boat); // Return updated Boat
 		Task DeleteBoatAsync(int boatId);
+
+		Task<bool> RejectBoatAsync(int boatId);
+		Task<bool> ApproveBoatAsync(int boatId);
+
 	}
 }

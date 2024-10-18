@@ -11,7 +11,12 @@ namespace AppSquareTask.Application.IServices
 	{
 		Task<TripBooking> BookTripAsync(int tripId, Guid userId, int numberOfParticipants);
 
-		Task<BoatBooking> BookBoatAsync(int boatId, Guid userId, int capacaity);
+		Task<BoatBooking> BookBoatAsync(int boatId, Guid userId, string purpose ,DateTime date);
 
+		Task CancelTripBookingAsync(int bookingId, int customerId);
+		Task CancelBoatBookingAsync(int bookingId, int customerId);
+
+		Task<BoatBooking> GetBoatBookingByIdAsync(int bookingId);
+		Task<TripBooking> GetTripBookingByIdAsync(int bookingId);
 	}
 }

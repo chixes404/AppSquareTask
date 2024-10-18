@@ -2,6 +2,7 @@
 using AppSquareTask.Core.Models;
 using AppSquareTask.Core.Models.Common;
 using AppSquareTask.Infrastracture.Data;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,10 +75,17 @@ namespace AppSquareTask.Infrastracture.Repositories
 			return _repositories[Type] as RepositoryBase<TEntity>;
 		}
 
+
+		public async Task<IDbContextTransaction> BeginTransactionAsync()
+		{
+			return await _context.Database.BeginTransactionAsync();
+		}
+
 		public async Task<int> SaveAsync()
 		{
 			return await _context.SaveChangesAsync();
 		}
+
 
 		public void Dispose()
 		{

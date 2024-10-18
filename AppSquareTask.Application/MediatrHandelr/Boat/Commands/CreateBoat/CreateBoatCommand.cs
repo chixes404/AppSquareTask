@@ -13,9 +13,8 @@ namespace AppSquareTask.Application.MediatrHandelr.Boat.Commands.CreateBoat
 	{
 		public string Name { get; set; }
 		public string Description { get; set; }
-		public decimal PricePerPerson { get; set; }
+		public decimal Price { get; set; }
 		public int Capacity { get; set; }
-		public DateTime MaxCancellationPeriod { get; set; }
 		public Status Status { get; set; } = Status.Pending;
 		public int OwnerId { get; set; }
 	}

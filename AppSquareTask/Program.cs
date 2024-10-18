@@ -26,6 +26,7 @@ using MediatR;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.Loader;
+using AppSquareTask.Application.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -120,15 +121,19 @@ builder.Services.AddSwaggerGen(options =>
 	});
 });
 
+
+void RegisterApplicationServices(IServiceCollection services)
+{
+	services
+		.AddServiceDependencies();
+}
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ApiResponseHandler>();
 builder.Services.AddScoped<JwtTokenGenerator>(); 
-builder.Services.AddScoped<IOwnerService, OwnerService>();
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
+
+
+
 builder.Services.AddFluentValidationAutoValidation()
 	.AddFluentValidationClientsideAdapters()
 	.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());

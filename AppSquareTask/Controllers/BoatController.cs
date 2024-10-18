@@ -12,6 +12,11 @@ using AppSquareTask.Application.MediatrHandelr.Boat.Queries.GetBoatById;
 using AppSquareTask.Application.MediatrHandelr.Boat.Queries.GetBoatByOwner;
 using AppSquareTask.Controllers.Base;
 using AppSquareTask.Application.MediatrHandelr.Boat.Queries.GetAllBoats;
+using AppSquareTask.Application.MediatrHandelr.AdminManagment.ApproveOwner;
+using AppSquareTask.Application.MediatrHandelr.AdminManagment.RejectOwner;
+using AppSquareTask.Application.MediatrHandelr.Boat.Commands.ApproveBoat;
+using AppSquareTask.Application.MediatrHandelr.Boat.Commands.RejectBoat;
+using AppSquareTask.Application.MediatrHandelr.Boat;
 
 namespace AppSquareTask.Api.Controllers
 {
@@ -19,74 +24,16 @@ namespace AppSquareTask.Api.Controllers
 	[ApiController]
 	public class BoatsController : AppControllerBase
 	{
+		private readonly ApiResponseHandler _responseHandler;
 		private readonly IMediator _mediator;
-		private readonly IBoatService _boatService;
 
-		public BoatsController(IMediator mediator, IBoatService boatService)
+		public BoatsController(IMediator mediator, ApiResponseHandler responseHandler)
 		{
 			_mediator = mediator;
-			_boatService = boatService;
+			_responseHandler = responseHandler;
 		}
 
-		// POST: api/Boats
-		[HttpPost]
-		public async Task<IActionResult> CreateBoat([FromBody] CreateBoatCommand command)
-		{
-			var result = await _mediator.Send(command);
 
-			if (result == null)
-			{
-				return BadRequest("Failed to create boat");
-			}
-
-			return Ok(result);
-		}
-
-		// PUT: api/Boats/{id}
-		[HttpPut("{id}")]
-		public async Task<IActionResult> UpdateBoat(int id)
-		{
-			
-
-			var result = await _mediator.Send(id);
-
-			if (result == null)
-			{
-				return NotFound($"Boat with ID {id} not found");
-			}
-
-			return Ok(result);
-		}
-
-	
-		// GET: api/Boats/{id}
-		[HttpGet("{id}")]
-		public async Task<IActionResult> GetBoatById(int id)
-		{
-			var boat = await _mediator.Send(new GetBoatByIdQuery { Id = id });
-
-			if (boat == null)
-			{
-				return NotFound($"Boat with ID {id} not found or not approved");
-			}
-			return Ok(boat);
-		}
-
-		// GET: api/Boats/Owner/{ownerId}
-		[HttpGet("Owner/{ownerId}")]
-		public async Task<IActionResult> GetBoatsByOwner(int ownerId)
-		{
-			var boats = await _mediator.Send(new GetBoatByOwnerQuery { OwnerId = ownerId });
-
-			if (boats == null)
-			{
-				return NotFound($"No boats found for owner with ID {ownerId}");
-			}
-
-			return Ok(boats);
-		}
-
-		// GET: api/Boats
 		[HttpGet]
 		public async Task<IActionResult> GetAllBoatsPaginated([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
 		{
@@ -96,7 +43,75 @@ namespace AppSquareTask.Api.Controllers
 				PageSize = pageSize
 			});
 
-			return Ok(boats);
+			var response = _responseHandler.Success(boats);
+			return CreateResponse(response);
 		}
+
+
+		[HttpPost]
+		public async Task<IActionResult> CreateBoat([FromBody] CreateBoatCommand command)
+		{
+			var result = await _mediator.Send(command);
+
+			if (result == null)
+			{
+				var errorResponse = _responseHandler.BadRequest<BoatDto>("Failed to create boat");
+				return CreateResponse(errorResponse);
+			}
+
+			var response = _responseHandler.Created(result);
+			return CreateResponse(response);
+		}
+
+	
+
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetBoatById(int id)
+		{
+			var boat = await _mediator.Send(new GetBoatByIdQuery { Id = id });
+
+			if (boat == null)
+			{
+				var errorResponse = _responseHandler.NotFound<BoatDto>($"Boat with ID {id} not found or not approved");
+				return CreateResponse(errorResponse);
+			}
+
+			var response = _responseHandler.Success(boat);
+			return CreateResponse(response);
+		}
+
+
+		[HttpGet("Owner/{ownerId}")]
+		public async Task<IActionResult> GetBoatsByOwner(int ownerId)
+		{
+			var boats = await _mediator.Send(new GetBoatByOwnerQuery { OwnerId = ownerId });
+
+			if (boats == null)
+			{
+				var errorResponse = _responseHandler.NotFound<List<BoatDto>>($"No boats found for owner with ID {ownerId}");
+				return CreateResponse(errorResponse);
+			}
+
+			var response = _responseHandler.Success(boats);
+			return CreateResponse(response);
+		}
+
+
+
+		[HttpPost("approve-boat/{boatId}")]
+		public async Task<IActionResult> ApproveBoat(int boatId)
+		{
+			var result = await Mediator.Send(new ApproveBoatCommand { BoatId = boatId });
+			return result.Succeeded ? Ok(result) : BadRequest(result);
+		}
+
+		[HttpPost("rejext-boat/{boatId}")]
+		public async Task<IActionResult> RejectOBoat(int boatId)
+		{
+			var result = await Mediator.Send(new RejectBoatCommand { BoatId = boatId });
+			return result.Succeeded ? Ok(result) : BadRequest(result);
+		}
+
+	
 	}
 }

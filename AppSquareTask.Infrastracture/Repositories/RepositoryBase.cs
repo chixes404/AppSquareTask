@@ -27,6 +27,10 @@ namespace AppSquareTask.Infrastracture.Repositories
 
 		}
 
+		public IQueryable<T> Query()
+		{
+			return RepositoryContext.Set<T>().AsQueryable();
+		}
 
 		public async Task<T> GetById(int id)
 		{
@@ -34,25 +38,9 @@ namespace AppSquareTask.Infrastracture.Repositories
 									  .FindAsync(id);
 		}
 
-
-
-		public async Task<IEnumerable<T>> FindAsync(
-	  Expression<Func<T, bool>> predicate,
-	  Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
-	  CancellationToken cancellationToken = default)
-		{
-			IQueryable<T> query = RepositoryContext.Set<T>();
-
-			if (include != null)
-			{
-				query = include(query);
-			}
-
-			return await query.Where(predicate).ToListAsync(cancellationToken);
-		}
 		public IQueryable<T> Find(
-			Expression<Func<T, bool>> predicate,
-			Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
+		Expression<Func<T, bool>> predicate,
+		Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
 		{
 			IQueryable<T> query = RepositoryContext.Set<T>();
 
@@ -70,40 +58,26 @@ namespace AppSquareTask.Infrastracture.Repositories
 		{
 			return RepositoryContext.Set<T>().Where(expression).AsNoTracking();
 		}
-		public async Task<T> CreateAsync(T entity)
+
+		public async Task<IEnumerable<T>> FindAsync(
+	  Expression<Func<T, bool>> predicate,
+	  Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+	  CancellationToken cancellationToken = default)
 		{
-			await RepositoryContext.Set<T>().AddAsync(entity);
-			return entity; // Return the created entity
+			IQueryable<T> query = RepositoryContext.Set<T>();
+
+			if (include != null)
+			{
+				query = include(query);
+			}
+
+			return await query.Where(predicate).ToListAsync(cancellationToken);
 		}
-
-		public async Task<T> UpdateAsync(T entity)
-		{
-			RepositoryContext.Set<T>().Update(entity);
-			return entity;
-		}
-
-		public async Task DeleteAsync(T entity)
-		{
-			RepositoryContext.Set<T>().Remove(entity);
-		}
-
-
-
-		public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
-		{
-			return await RepositoryContext.Set<T>().AnyAsync(predicate);
-		}
-
-		public async Task<int> CountAsync(Expression<Func<T, bool>> predicate)
-		{
-			return await RepositoryContext.Set<T>().CountAsync(predicate);
-		}
-
 
 
 		public async Task<IEnumerable<T>> FindBySpecificationAsync(
-		ISpecification<T> specification,
-		CancellationToken cancellationToken = default)
+	ISpecification<T> specification,
+	CancellationToken cancellationToken = default)
 		{
 			IQueryable<T> query = RepositoryContext.Set<T>();
 
@@ -135,6 +109,41 @@ namespace AppSquareTask.Infrastracture.Repositories
 			return await query.ToListAsync(cancellationToken);
 		}
 
+
+
+
+		public async Task<T> CreateAsync(T entity)
+		{
+			await RepositoryContext.Set<T>().AddAsync(entity);
+			return entity; // Return the created entity
+		}
+
+		public async Task<T> UpdateAsync(T entity)
+		{
+			RepositoryContext.Set<T>().Update(entity);
+			return entity;
+		}
+
+		public async Task DeleteAsync(T entity)
+		{
+			RepositoryContext.Set<T>().Remove(entity);
+		}
+
+
+
+		public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+		{
+			return await RepositoryContext.Set<T>().AnyAsync(predicate);
+		}
+
+		public async Task<int> CountAsync(Expression<Func<T, bool>> predicate)
+		{
+			return await RepositoryContext.Set<T>().CountAsync(predicate);
+		}
+
+
+
+	
 		}
 
 }

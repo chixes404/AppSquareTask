@@ -1,5 +1,6 @@
 ﻿using AppSquareTask.Core.Models;
 using AppSquareTask.Core.Models.Common;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace AppSquareTask.Core.IRepositories
 		IRepositoryBase<Boat> BoatRepository { get; }
 		IRepositoryBase<TripBooking> TripBookingRepository { get; }
 		IRepositoryBase<BoatBooking> BoatBookingRepository { get; }
+		Task<IDbContextTransaction> BeginTransactionAsync();
+
 		Task<int> SaveAsync();
 	}
 }

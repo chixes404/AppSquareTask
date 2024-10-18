@@ -16,6 +16,9 @@ namespace AppSquareTask.Application.IServices
 
 		Task<Wallet> GetWalletByCustomerIdAsync(Guid customerId);
 
+	     Task<bool> RefundToWalletAsync(Guid userId, decimal amount);
+
+
 
 
 

@@ -3,6 +3,7 @@ using AppSquareTask.Application.IServices;
 using AppSquareTask.Application.Responses;
 using AppSquareTask.Core.IRepositories;
 using AppSquareTask.Core.Models;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,12 @@ namespace AppSquareTask.Application.Services
 	public class TripService : ITripService
 	{
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly IMapper _mapper;
 
-		public TripService(IUnitOfWork unitOfWork)
+		public TripService(IUnitOfWork unitOfWork , IMapper mapper)
 		{
 			_unitOfWork = unitOfWork;
+			_mapper = mapper;
 		}
 
 		public async Task<Trip> CreateTripAsync(Trip trip)
@@ -75,21 +78,31 @@ namespace AppSquareTask.Application.Services
 
 		public async Task<IEnumerable<ResponseTripDto>> GetTripsByOwnerAsync(int ownerId)
 		{
-			// Fetch trips by OwnerId
 			var trips = await _unitOfWork.Repository<Trip>()
-							.FindAsync(s => true, include: q => q.Include(s => s.Owner)); 
-			return (IEnumerable<ResponseTripDto>)trips.Where(trip => trip.OwnerId == ownerId && trip.Status == Status.Approved);
+				.FindAsync(trip => trip.OwnerId == ownerId && trip.Status == Status.Approved,
+						   include: q => q.Include(trip => trip.Owner));
+
+			var mappedTrips = trips.Select(trip => _mapper.Map<ResponseTripDto>(trip));
+
+			return mappedTrips;
 		}
+
 
 		public async Task<PagedList<ResponseTripDto>> GetAllTripsPaginatedAsync(int pageNumber, int pageSize)
 		{
-			var allTrips = await _unitOfWork.TripRepository.GetAllAsync();
-			var approvedTrips = allTrips.Where(trip => trip.Status == Status.Approved);
+			var approvedTripsQuery = _unitOfWork.TripRepository.Query()
+				.Where(trip => trip.Status == Status.Approved);
 
-			var totalCount = approvedTrips.Count(); // Count approved trips
-			var tripsToReturn = approvedTrips.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList(); // Get the requested page
+			var totalCount = await approvedTripsQuery.CountAsync();
 
-			return new PagedList<ResponseTripDto>((IEnumerable<ResponseTripDto>)tripsToReturn, pageNumber, pageSize, totalCount); // Create PagedList
+			var paginatedTrips = await approvedTripsQuery
+				.Skip((pageNumber - 1) * pageSize)
+				.Take(pageSize)
+				.ToListAsync();
+
+			var mappedTrips = paginatedTrips.Select(trip => _mapper.Map<ResponseTripDto>(trip)).ToList();
+
+			return new PagedList<ResponseTripDto>(mappedTrips, pageNumber, pageSize, totalCount);
 		}
 	}
 }

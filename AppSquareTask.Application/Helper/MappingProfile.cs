@@ -1,7 +1,9 @@
-﻿using AppSquareTask.Application.MediatrHandelr.Auth.CustomerRegister;
+﻿using AppSquareTask.Application.Dtos;
+using AppSquareTask.Application.MediatrHandelr.Auth.CustomerRegister;
 using AppSquareTask.Application.MediatrHandelr.Auth.Register;
 using AppSquareTask.Application.MediatrHandelr.Boat;
 using AppSquareTask.Application.MediatrHandelr.Boat.Commands.CreateBoat;
+using AppSquareTask.Application.MediatrHandelr.Booking.Queries;
 using AppSquareTask.Application.MediatrHandelr.Trip;
 using AppSquareTask.Application.MediatrHandelr.Trip.Commands.CreateTrip;
 using AppSquareTask.Application.MediatrHandelr.Trip.Commands.UpdateTrip;
@@ -22,19 +24,36 @@ namespace AppSquareTask.Application.Helper
 		public MappingProfile()
 		{
 			CreateMap<OwnerRegisterCommand, ApplicationUser>();
+
+
 			CreateMap<CustomerRegisterCommand, ApplicationUser>();
 
 
 
 			CreateMap<CreateTripCommand,Trip>();
+
 			CreateMap<UpdateTripCommand, Trip>();
+
 			CreateMap<Trip, TripDto>().ReverseMap();
 
 
+			CreateMap<Trip, ResponseTripDto>();
+
+			CreateMap<ResponseTripDto, TripDto>();
+			
+
+			CreateMap<Boat, ResponseBoatDto>();
+			CreateMap<ResponseBoatDto, BoatDto>();
+
+		
+
 			CreateMap<CreateBoatCommand, Boat>();
+
 			CreateMap<Boat, BoatDto>().ReverseMap();
+			
+			CreateMap<BoatBookingDto, BoatBooking>().ReverseMap();
 
-
+			CreateMap<TripBookingDto, TripBooking>().ReverseMap();
 		}
 
 
