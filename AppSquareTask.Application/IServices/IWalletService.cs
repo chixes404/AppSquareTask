@@ -11,7 +11,7 @@ namespace AppSquareTask.Application.IServices
 	{
 
 
-		Task<bool> Pay(Guid userId, decimal amount);
+		Task<bool> Pay(Guid userId, decimal amount, int serviceId);
 
 
 		Task<Wallet> GetWalletByCustomerIdAsync(Guid customerId);

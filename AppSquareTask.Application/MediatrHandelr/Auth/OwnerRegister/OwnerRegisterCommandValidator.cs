@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
 
-namespace AppSquareTask.Application.MediatrHandelr.Auth.Register
+namespace AppSquareTask.Application.MediatrHandelr.Auth.OwnerRegister
 {
 	public class RegisterCommandValidator : AbstractValidator<OwnerRegisterCommand>
 	{

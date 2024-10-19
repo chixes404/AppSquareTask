@@ -12,7 +12,7 @@ public class WalletService : IWalletService
 		_unitOfWork = unitOfWork;
 	}
 
-	public async Task<bool> Pay(Guid userId, decimal amount)
+	public async Task<bool> Pay(Guid userId, decimal amount , int serviceId)
 	{
 		var wallet = await GetWalletByCustomerIdAsync(userId); 
 		if (wallet == null || wallet.Balance < amount)
@@ -25,7 +25,8 @@ public class WalletService : IWalletService
 		{
 			WalletId = wallet.Id,
 			Amount = amount,
-			Type = "Wallet", 
+			Type = "Wallet",
+			serviceId = serviceId,
 			Created = DateTime.UtcNow 
 		};
 
@@ -39,34 +40,28 @@ public class WalletService : IWalletService
 	}
 
 
-	public async Task<bool> RefundToWalletAsync(Guid userId, decimal amount)
+	public async Task<bool> RefundToWalletAsync(Guid userId, decimal amount )
 	{
-		// Retrieve the wallet associated with the userId
 		var wallet = await GetWalletByCustomerIdAsync(userId);
 		if (wallet == null)
 		{
-			return false; // Wallet not found
+			return false; 
 		}
 
-		// Increase the wallet balance by the refund amount
 		wallet.Balance += amount;
 
-		// Create a new transaction record for the refund
 		var transaction = new Transaction
 		{
-			WalletId = wallet.Id, // Assuming wallet has an Id property
+			WalletId = wallet.Id,
 			Amount = amount,
-			Type = "Credit", // Indicate that this is a credit transaction
-			Created = DateTime.UtcNow // Use current date/time
+			Type = "Wallet",
+			Created = DateTime.UtcNow 
 		};
 
-		// Update the wallet in the repository
 		await _unitOfWork.WalletRepository.UpdateAsync(wallet);
 
-		// Save the transaction to the repository
 		await _unitOfWork.Repository<Transaction>().CreateAsync(transaction);
 
-		// Commit all changes to the database
 		await _unitOfWork.SaveAsync();
 
 		return true; // Successful refund and transaction creation

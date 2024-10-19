@@ -44,16 +44,16 @@ namespace AppSquareTask.Middlewares
 					response = _responseHandler.NotFound<string>(keyNotFoundEx.Message);
 					break;
 
-				case FluentValidation.ValidationException validationEx:
-					context.Response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
-					response = new ApiResponse<string>
-					{
-						StatusCode = HttpStatusCode.UnprocessableEntity,
-						Succeeded = false,
-						Message = "Validation errors occurred.",
-						Errors = validationEx.Errors.Select(x => x.ErrorMessage).ToList()
-					};
-					break;
+				//case FluentValidation.ValidationException validationEx:
+				//	context.Response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
+				//	response = new ApiResponse<string>
+				//	{
+				//		StatusCode = HttpStatusCode.UnprocessableEntity,
+				//		Succeeded = false,
+				//		Message = "Validation errors occurred.",
+				//		Errors = validationEx.Errors.Select(x => x.ErrorMessage).ToList()
+				//	};
+				//	break;
 
 				case UnauthorizedAccessException unauthorizedEx:
 					context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;

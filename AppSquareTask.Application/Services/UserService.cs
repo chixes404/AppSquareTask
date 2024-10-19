@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Threading.Tasks;
 
-public class UserService // Or whatever service you're implementing
+public class UserService 
 {
 	private readonly UserManager<ApplicationUser> _userManager;
 
@@ -19,6 +19,6 @@ public class UserService // Or whatever service you're implementing
 		{
 			throw new KeyNotFoundException("User not found.");
 		}
-		return user; // Return the found user
+		return user; 
 	}
 }

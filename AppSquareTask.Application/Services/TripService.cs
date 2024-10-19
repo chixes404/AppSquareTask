@@ -24,7 +24,6 @@ namespace AppSquareTask.Application.Services
 
 		public async Task<Trip> CreateTripAsync(Trip trip)
 		{
-			// Set the trip status to Pending by default
 			trip.Status = Status.Pending;
 
 			await _unitOfWork.TripRepository.CreateAsync(trip);
@@ -37,11 +36,9 @@ namespace AppSquareTask.Application.Services
 
 		public async Task<Trip> UpdateTripAsync(Trip trip)
 		{
-			// Ensure the trip exists before updating
 			var existingTrip = await _unitOfWork.TripRepository.GetById(trip.Id);
 			if (existingTrip == null) throw new KeyNotFoundException("Trip not found.");
 
-			// Update properties as needed
 			existingTrip.Name = trip.Name;
 			existingTrip.Description = trip.Description;
 			existingTrip.PricePerPerson = trip.PricePerPerson;
@@ -51,7 +48,7 @@ namespace AppSquareTask.Application.Services
 			await _unitOfWork.TripRepository.UpdateAsync(existingTrip);
 			await _unitOfWork.SaveAsync();
 
-			return existingTrip; // Return the updated trip
+			return existingTrip; 
 		}
 
 		public async Task DeleteTripAsync(int tripId)

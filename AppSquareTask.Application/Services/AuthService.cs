@@ -2,7 +2,6 @@
 using AppSquareTask.Application.IServices;
 using AppSquareTask.Application.MediatrHandelr.Auth.CustomerRegister;
 using AppSquareTask.Application.MediatrHandelr.Auth.Login;
-using AppSquareTask.Application.MediatrHandelr.Auth.Register;
 using AppSquareTask.Core.IRepositories;
 using AppSquareTask.Core.Models;
 using AppSquareTask.Infrastracture.Configuration;
@@ -27,7 +26,7 @@ namespace AppSquareTask.Application.Services
 		
 
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly IMapper _mapper; // Inject IMapper
+		private readonly IMapper _mapper; 
 		private readonly JWT _jwt;
 		private readonly RoleManager<Role> _roleManager;
 		private readonly IUnitOfWork _unitOfWork;
@@ -47,18 +46,23 @@ namespace AppSquareTask.Application.Services
 
 
 
-		public async Task<AuthResponse> OwnerRegisterAsync(OwnerRegisterCommand model)
+		public async Task<AuthResponse> OwnerRegisterAsync(string username , string email , string password)
 		{
-			if (await _userManager.FindByEmailAsync(model.Email) is not null)
+			if (await _userManager.FindByEmailAsync(email) is not null)
 			{
 				return new AuthResponse { Message = "Email is already registered." };
 			}
 
 
-			var user = _mapper.Map<ApplicationUser>(model);
+			var user = new ApplicationUser
+			{
+				UserName = username,
+				Email = email,
+				CreatedAt = DateTime.UtcNow
+			};
 			user.Status = Status.Pending;
 
-			var result = await _userManager.CreateAsync(user, model.Password);
+			var result = await _userManager.CreateAsync(user, password);
 
 
 			if (!result.Succeeded)
@@ -71,7 +75,7 @@ namespace AppSquareTask.Application.Services
 				};
 			}
 
-			await _userManager.AddToRoleAsync(user, "Owner");  // Create the owner record in the database
+			await _userManager.AddToRoleAsync(user, "Owner");  
 			var wallet = new Wallet
 			{
 				UserId = user.Id,
@@ -159,7 +163,6 @@ namespace AppSquareTask.Application.Services
 
 		public async Task<AuthResponse> LoginAsync(LoginCommand model)
 		{
-			// Find the user by email
 			var user = await _userManager.FindByEmailAsync(model.Email);
 			if (user == null)
 			{

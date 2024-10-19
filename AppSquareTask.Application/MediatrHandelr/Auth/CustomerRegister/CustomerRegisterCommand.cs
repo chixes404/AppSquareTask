@@ -1,5 +1,4 @@
-﻿using AppSquareTask.Application.Dtos;
-using AppSquareTask.Application.Responses;
+﻿using AppSquareTask.Application.Responses;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AppSquareTask.Application.MediatrHandelr.Auth.CustomerRegister
 {
-	public class CustomerRegisterCommand : IRequest<ApiResponse<AuthResultDto>>
+    public class CustomerRegisterCommand : IRequest<ApiResponse<AuthResultDto>>
 	{
 		public string UserName { get; set; }
 		public string Email { get; set; }

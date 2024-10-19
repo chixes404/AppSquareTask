@@ -1,15 +1,12 @@
-﻿using AppSquareTask.Application.MediatrHandelr.AdminManagment.ApproveOwner;
-using AppSquareTask.Application.MediatrHandelr.AdminManagment.RejectOwner;
+﻿using AppSquareTask.Application.Responses;
 using AppSquareTask.Application.MediatrHandelr.Auth.CustomerRegister;
 using AppSquareTask.Application.MediatrHandelr.Auth.Login;
-using AppSquareTask.Application.MediatrHandelr.Auth.Register;
-using AppSquareTask.Application.Responses;
-using AppSquareTask.Application.MediatrHandelr.Auth;
 using AppSquareTask.Controllers.Base;
 using AppSquareTask.Core.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using AppSquareTask.Application.MediatrHandelr.Auth.OwnerRegister;
 
 namespace AppSquareTask.Controllers
 {
@@ -26,7 +23,7 @@ namespace AppSquareTask.Controllers
 		[HttpPost("register-owner")]
 		public async Task<IActionResult> RegisterOwner([FromBody] OwnerRegisterCommand command)
 		{
-			var result = await _mediator.Send(command);
+			var result = await Mediator.Send(command);
 			return CreateResponse(result);
 		}
 

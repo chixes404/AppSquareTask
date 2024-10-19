@@ -3,9 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppSquareTask.Application.IServices;
 using AppSquareTask.Application.Responses;
-using AppSquareTask.Application.MediatrHandelr.AdminManagment.ApproveOwner;
+using AppSquareTask.Application.MediatrHandelr.AdminManagment.RejectOwner;
 
-public class RejectOwnerCommandHandler : IRequestHandler<ApproveOwnerCommand, ApiResponse<string>>
+public class RejectOwnerCommandHandler : IRequestHandler<RejectOwnerCommand, ApiResponse<string>>
 {
 	private readonly IOwnerService _ownerService;
 	private readonly ApiResponseHandler _responseHandler;
@@ -16,7 +16,7 @@ public class RejectOwnerCommandHandler : IRequestHandler<ApproveOwnerCommand, Ap
 		_responseHandler = responseHandler;
 	}
 
-	public async Task<ApiResponse<string>> Handle(ApproveOwnerCommand request, CancellationToken cancellationToken)
+	public async Task<ApiResponse<string>> Handle(RejectOwnerCommand request, CancellationToken cancellationToken)
 	{
 		var result = await _ownerService.RejectOwnerAsync(request.OwnerId);
 

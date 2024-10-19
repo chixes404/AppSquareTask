@@ -17,6 +17,7 @@ using AppSquareTask.Application.MediatrHandelr.AdminManagment.RejectOwner;
 using AppSquareTask.Application.MediatrHandelr.Boat.Commands.ApproveBoat;
 using AppSquareTask.Application.MediatrHandelr.Boat.Commands.RejectBoat;
 using AppSquareTask.Application.MediatrHandelr.Boat;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppSquareTask.Api.Controllers
 {
@@ -33,6 +34,7 @@ namespace AppSquareTask.Api.Controllers
 			_responseHandler = responseHandler;
 		}
 
+		[Authorize]
 
 		[HttpGet]
 		public async Task<IActionResult> GetAllBoatsPaginated([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
@@ -47,6 +49,7 @@ namespace AppSquareTask.Api.Controllers
 			return CreateResponse(response);
 		}
 
+		[Authorize("Owner")]
 
 		[HttpPost]
 		public async Task<IActionResult> CreateBoat([FromBody] CreateBoatCommand command)
@@ -63,7 +66,8 @@ namespace AppSquareTask.Api.Controllers
 			return CreateResponse(response);
 		}
 
-	
+
+		[Authorize]
 
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetBoatById(int id)
@@ -80,6 +84,7 @@ namespace AppSquareTask.Api.Controllers
 			return CreateResponse(response);
 		}
 
+		[Authorize("Owner")]
 
 		[HttpGet("Owner/{ownerId}")]
 		public async Task<IActionResult> GetBoatsByOwner(int ownerId)
@@ -97,6 +102,7 @@ namespace AppSquareTask.Api.Controllers
 		}
 
 
+		[Authorize("Admin")]
 
 		[HttpPost("approve-boat/{boatId}")]
 		public async Task<IActionResult> ApproveBoat(int boatId)
@@ -104,6 +110,7 @@ namespace AppSquareTask.Api.Controllers
 			var result = await Mediator.Send(new ApproveBoatCommand { BoatId = boatId });
 			return result.Succeeded ? Ok(result) : BadRequest(result);
 		}
+		[Authorize("Admin")]
 
 		[HttpPost("rejext-boat/{boatId}")]
 		public async Task<IActionResult> RejectOBoat(int boatId)

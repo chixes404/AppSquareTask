@@ -3,11 +3,10 @@ using AppSquareTask.Application.Responses;
 using AppSquareTask.Application.IServices;
 using System.Threading;
 using System.Threading.Tasks;
-using AppSquareTask.Application.Dtos;
 
 namespace AppSquareTask.Application.MediatrHandelr.Auth.CustomerRegister
 {
-	public class CustomerRegisterCommandHandler : IRequestHandler<CustomerRegisterCommand, ApiResponse<AuthResultDto>>
+    public class CustomerRegisterCommandHandler : IRequestHandler<CustomerRegisterCommand, ApiResponse<AuthResultDto>>
 	{
 		private readonly IAuthService _authService;
 		private readonly ApiResponseHandler _responseHandler;

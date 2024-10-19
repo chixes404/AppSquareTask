@@ -27,6 +27,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.Loader;
 using AppSquareTask.Application.Helper;
+using AppSquareTask.Application.MediatrHandelr.Auth.OwnerRegister;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,11 +47,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Configure Identity
 builder.Services.AddIdentity<ApplicationUser, M.Role>(options => options.SignIn.RequireConfirmedAccount = false)
 		.AddRoles<M.Role>()
-		.AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("OfferxProject")
+		.AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("AppSquareProject")
 		.AddEntityFrameworkStores<ApplicationDbContext>()
 		.AddDefaultTokenProviders();
 
-// Configure JWT settings from appsettings.json
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("Jwt"));
 
 // Configure Authentication with JWT Bearer
@@ -88,7 +88,9 @@ builder.Services.AddControllers().
 
 
 builder.Services.AddSignalR();
-builder.Services.AddMediatR(config => config.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -122,15 +124,17 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ApiResponseHandler>();
+builder.Services.AddScoped<JwtTokenGenerator>();
 void RegisterApplicationServices(IServiceCollection services)
 {
 	services
 		.AddServiceDependencies();
 }
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<ApiResponseHandler>();
-builder.Services.AddScoped<JwtTokenGenerator>(); 
+
 
 
 
@@ -139,7 +143,7 @@ builder.Services.AddFluentValidationAutoValidation()
 	.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 // Register ValidationBehavior
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+//builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 
 builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));

@@ -1,5 +1,4 @@
-﻿using AppSquareTask.Application.Dtos;
-using AppSquareTask.Application.Responses;
+﻿using AppSquareTask.Application.Responses;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -7,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppSquareTask.Application.MediatrHandelr.Auth.Register
+namespace AppSquareTask.Application.MediatrHandelr.Auth.OwnerRegister
 {
-	public class OwnerRegisterCommand : IRequest<ApiResponse<AuthResultDto>>
+    public class OwnerRegisterCommand : IRequest<ApiResponse<AuthResultDto>>
 	{
 		public string UserName { get; set; }
 		public string Email { get; set; }

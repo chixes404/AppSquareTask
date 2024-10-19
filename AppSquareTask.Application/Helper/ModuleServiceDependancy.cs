@@ -1,17 +1,13 @@
 ﻿using AppSquareTask.Application.IServices;
+using AppSquareTask.Application.MediatrHandelr.Auth.OwnerRegister;
+using AppSquareTask.Application.Responses;
 using AppSquareTask.Application.Services;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace AppSquareTask.Application.Helper
 {
-	
+
 
 	public static class ModuleServiceDependancy
 	{
@@ -19,18 +15,26 @@ namespace AppSquareTask.Application.Helper
 		{
 
 			// Register Entity services
-
+			services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 			services.AddScoped<IEmailService, EmailService>();
-			services.AddScoped<INotificationService, NotificationService>();
-			services.AddScoped<IBookingService, BookingService>();
-		    services.AddScoped<ITripService, TripService>();
 			services.AddScoped<IOwnerService, OwnerService>();
+			services.AddScoped<INotificationService, NotificationService>();
+			services.AddScoped<ITripService, TripService>();
+			services.AddScoped<IBookingService, BookingService>();
             services.AddScoped<ICustomerService, CustomerService>();
 			services.AddScoped<IBoatService, BoatService>();
 			services.AddScoped<IWalletService, WalletService>();
 			services.AddScoped<IAuthService, AuthService>();
 			services.AddScoped<UserService>();
+
 			return services;
+
+
+
+
 		}
+
+
+
 	}
 }

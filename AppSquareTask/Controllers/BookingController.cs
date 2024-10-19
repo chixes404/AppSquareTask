@@ -5,6 +5,7 @@ using AppSquareTask.Application.MediatrHandelr.Booking.Commands.CancelBookingBoa
 using AppSquareTask.Application.MediatrHandelr.Booking.Commands.CancelBookingTrip;
 using AppSquareTask.Core.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,8 @@ namespace AppSquareTask.Controllers
 			_mediator = mediator;
 			_bookingService = bookingService;
 		}
+		[Authorize]
+
 		[HttpPost("book-boat")]
 		public async Task<ActionResult> BookBoat([FromBody] BookBoatCommand command)
 		{
@@ -34,6 +37,8 @@ namespace AppSquareTask.Controllers
 
 			return CreatedAtAction(nameof(_bookingService.GetBoatBookingByIdAsync), new { bookingId = boatBooking.Id }, boatBooking);
 		}
+
+		[Authorize]
 
 		[HttpPost("cancel-boat")]
 		public async Task<ActionResult> CancelBoatBooking([FromBody] CancelBookingBoatCommand command)
@@ -47,6 +52,7 @@ namespace AppSquareTask.Controllers
 		}
 
 
+		[Authorize]
 
 		[HttpPost("book-trip")]
 		public async Task<ActionResult> BookTrip([FromBody] BookTripCommand command)
@@ -59,6 +65,7 @@ namespace AppSquareTask.Controllers
 
 			return CreatedAtAction(nameof(_bookingService.GetBoatBookingByIdAsync), new { bookingId = tripBooking.Id }, tripBooking);
 		}
+		[Authorize]
 
 		[HttpPost("cancel-trip")]
 		public async Task<ActionResult> CancelTripBooking([FromBody] CancelBookingTripCommand command)
@@ -71,6 +78,7 @@ namespace AppSquareTask.Controllers
 			return NoContent();
 		}
 
+		[Authorize]
 
 		[HttpGet("boat/{bookingId}")]
 		public async Task<ActionResult> GetBookingboatById(int bookingId)

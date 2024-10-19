@@ -90,7 +90,7 @@ public async Task<TripBooking> GetTripBookingByIdAsync(int bookingId)
 
 		try
 		{
-			var isPaymentSuccessful = await _walletService.Pay(userId, totalPrice);
+			var isPaymentSuccessful = await _walletService.Pay(userId, totalPrice , tripId);
 			if (!isPaymentSuccessful)
 			{
 				throw new InvalidOperationException("Payment failed.");
@@ -161,7 +161,7 @@ public async Task<TripBooking> GetTripBookingByIdAsync(int bookingId)
 		using var transaction = await _unitOfWork.BeginTransactionAsync();
 		try
 		{
-			var isPaymentSuccessful = await _walletService.Pay(userId, totalPrice);
+			var isPaymentSuccessful = await _walletService.Pay(userId, totalPrice , boatId);
 			if (!isPaymentSuccessful)
 			{
 				throw new InvalidOperationException("Payment failed.");
@@ -236,7 +236,7 @@ public async Task<TripBooking> GetTripBookingByIdAsync(int bookingId)
 
 		if (boatBooking.IsPaid)
 		{
-			var refundSuccessful = await _walletService.RefundToWalletAsync(customer.UserId, boatBooking.Price);
+			var refundSuccessful = await _walletService.RefundToWalletAsync(customer.UserId, boatBooking.Price );
 			if (!refundSuccessful)
 			{
 				throw new InvalidOperationException("Refund failed.");

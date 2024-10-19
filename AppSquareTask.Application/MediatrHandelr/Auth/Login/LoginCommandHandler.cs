@@ -1,5 +1,4 @@
-﻿using AppSquareTask.Application.Dtos;
-using AppSquareTask.Application.IServices;
+﻿using AppSquareTask.Application.IServices;
 using AppSquareTask.Application.Responses;
 using MediatR;
 using System;
@@ -10,11 +9,10 @@ using System.Threading.Tasks;
 
 namespace AppSquareTask.Application.MediatrHandelr.Auth.Login
 {
-	public class LoginCommandHandler : IRequestHandler<LoginCommand, ApiResponse<AuthResultDto>>
+    public class LoginCommandHandler : IRequestHandler<LoginCommand, ApiResponse<AuthResultDto>>
 	{
 		private readonly IAuthService _authService;
-		private readonly ApiResponseHandler _responseHandler; // Handles consistent API responses
-
+		private readonly ApiResponseHandler _responseHandler; 
 		public LoginCommandHandler(IAuthService authService, ApiResponseHandler responseHandler)
 		{
 			_authService = authService;

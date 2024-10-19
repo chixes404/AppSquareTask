@@ -9,10 +9,12 @@ namespace AppSquareTask.Core.Models
 {
     public class Transaction : BaseEntity
 	{
-		public decimal Amount { get; set; } // Positive for credits, negative for debits
-		public string Type { get; set; } // "Credit" or "Debit"
+		public decimal Amount { get; set; } 
+		public int ? serviceId { get; set; }
+
+		public string Type { get; set; } 
 		public int WalletId { get; set; }
-		public Wallet Wallet { get; set; } // Navigation property for wallet
+		public Wallet Wallet { get; set; } 
 	}
 
 }

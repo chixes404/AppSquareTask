@@ -14,7 +14,7 @@ namespace AppSquareTask.Application.MediatrHandelr.Auth.CustomerRegister
 	{
 		public CustomerRegisterCommandValidator()
 		{
-			RuleFor(x => x.UserName).NotEmpty().WithMessage(" name is required.");
+			RuleFor(x => x.UserName).NotEmpty().MaximumLength(15).WithMessage(" name is required.");
 			RuleFor(x => x.Email).NotEmpty().EmailAddress().WithMessage("A valid email is required.");
 			RuleFor(x => x.Password).NotEmpty().MinimumLength(8).WithMessage("Password must be at least 8 characters long.");
 		}

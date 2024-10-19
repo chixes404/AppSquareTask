@@ -20,7 +20,6 @@ namespace AppSquareTask.Application.Services
 		}
 		public async Task SendEmailAsync(string toEmail, string subject, string body)
 		{
-			// Get SMTP settings from configuration
 			var smtpSettings = _configuration.GetSection("EmailSettings");
 
 			var smtpClient = new SmtpClient(smtpSettings["Host"])

@@ -26,11 +26,9 @@ namespace AppSquareTask.Application.Services
 
 		public async Task<Owner> GetOwnerByIdAsync(int ownerId)
 		{
-			// Use Unit of Work's OwnerRepository to fetch the owner by ID
 			return await _unitOfWork.OwnerRepository.GetById(ownerId);
 		}
 
-		// Method to approve owner registration
 		public async Task<bool> ApproveOwnerAsync(int ownerId)
 		{
 			var owner = await _unitOfWork.OwnerRepository.GetById(ownerId);
@@ -39,7 +37,6 @@ namespace AppSquareTask.Application.Services
 			var user = await _userManager.FindByIdAsync(owner.UserId.ToString());
 			if (user == null) return false;
 
-			// Approve the owner by updating the user's status
 			user.Status = Status.Approved;
 			await _userManager.UpdateAsync(user);
 			await _unitOfWork.SaveAsync();
@@ -50,7 +47,6 @@ namespace AppSquareTask.Application.Services
 			return true;
 		}
 
-		// Method to reject owner registration
 		public async Task<bool> RejectOwnerAsync(int ownerId)
 		{
 			var owner = await _unitOfWork.OwnerRepository.GetById(ownerId);
@@ -75,32 +71,28 @@ namespace AppSquareTask.Application.Services
 
 		public async Task CreateOwnerAsync(Owner owner, CancellationToken cancellationToken)
 		{
-			// Add the new owner and save changes through Unit of Work
 			await _unitOfWork.OwnerRepository.CreateAsync(owner);
-			await _unitOfWork.SaveAsync(); // Save the changes in a single transaction
+			await _unitOfWork.SaveAsync(); 
 		}
 
 		public async Task<IEnumerable<Owner>> GetAllOwnersAsync()
 		{
-			// Retrieve all owners using Unit of Work's OwnerRepository
 			return await _unitOfWork.OwnerRepository.GetAllAsync();
 		}
 
 		public async Task UpdateOwnerAsync(Owner owner)
 		{
-			// Update the owner and save the changes
 			_unitOfWork.OwnerRepository.UpdateAsync(owner);
-			await _unitOfWork.SaveAsync(); // Commit the update
+			await _unitOfWork.SaveAsync(); 
 		}
 
 		public async Task DeleteOwnerAsync(int ownerId)
 		{
-			// Get the owner by ID and delete them
 			var owner = await _unitOfWork.OwnerRepository.GetById(ownerId);
 			if (owner != null)
 			{
 				_unitOfWork.OwnerRepository.DeleteAsync(owner);
-				await _unitOfWork.SaveAsync(); // Commit the delete action
+				await _unitOfWork.SaveAsync(); 
 			}
 		}
 	}

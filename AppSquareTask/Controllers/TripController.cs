@@ -12,6 +12,7 @@ using AppSquareTask.Application.MediatrHandelr.Trip.Queries.GetTripById;
 using AppSquareTask.Application.MediatrHandelr.Trip.Queries.GetTripByOwner;
 using AppSquareTask.Controllers.Base;
 using AppSquareTask.Application.MediatrHandelr.Trip.Queries.GetAllTrips;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppSquareTask.Controllers
 {
@@ -28,8 +29,9 @@ namespace AppSquareTask.Controllers
             _tripService = tripService;
         }
 
-        // POST: api/Trips
-        [HttpPost]
+		//[Authorize(Roles = "Admin")]
+
+		[HttpPost]
         public async Task<IActionResult> CreateTrip([FromBody] CreateTripCommand command)
         {
             var result = await _mediator.Send(command);
@@ -42,8 +44,8 @@ namespace AppSquareTask.Controllers
             return Ok(result);
         }
 
-        // PUT: api/Trips/{id}
-        [HttpPut("{id}")]
+		[Authorize(Roles = "Admin")]
+		[HttpPut("{id}")]
         public async Task<IActionResult> UpdateTrip(int id)
         {
 
@@ -59,8 +61,8 @@ namespace AppSquareTask.Controllers
         }
 
 
-        // GET: api/Trips/{id}
-        [HttpGet("{id}")]
+		[Authorize]
+		[HttpGet("{id}")]
         public async Task<IActionResult> GetTripById(int id)
         {
             var trip = await _mediator.Send(new GetTripByIdQuery { Id = id });
@@ -72,8 +74,8 @@ namespace AppSquareTask.Controllers
             return Ok(trip);
         }
 
-        // GET: api/Trips/Owner/{ownerId}
-        [HttpGet("Owner/{ownerId}")]
+		[Authorize(Roles = "Admin , Owner")]
+		[HttpGet("Owner/{ownerId}")]
         public async Task<IActionResult> GetTripsByOwner(int ownerId)
         {
             var trips = await _mediator.Send(new GetTripByOwnerQuery { OwnerId = ownerId });
@@ -86,8 +88,11 @@ namespace AppSquareTask.Controllers
             return Ok(trips);
         }
 
-        // GET: api/Trips
-        [HttpGet]
+		// GET: api/Trips
+
+		[Authorize]
+
+		[HttpGet]
         public async Task<IActionResult> GetAllTripsPaginated([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             var trips = await _mediator.Send(new GetPaginatedTripsQuery

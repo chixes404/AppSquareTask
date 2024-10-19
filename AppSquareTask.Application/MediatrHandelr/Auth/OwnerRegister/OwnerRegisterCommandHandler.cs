@@ -3,12 +3,11 @@ using AppSquareTask.Application.Responses;
 using AppSquareTask.Application.IServices;
 using System.Threading;
 using System.Threading.Tasks;
-using AppSquareTask.Application.Dtos;
 using AppSquareTask.Application.Services;
 
-namespace AppSquareTask.Application.MediatrHandelr.Auth.Register
+namespace AppSquareTask.Application.MediatrHandelr.Auth.OwnerRegister
 {
-	public class OwnerRegisterCommandHandler : IRequestHandler<OwnerRegisterCommand, ApiResponse<AuthResultDto>>
+    public class OwnerRegisterCommandHandler : IRequestHandler<OwnerRegisterCommand, ApiResponse<AuthResultDto>>
 	{
 		private readonly IAuthService _authService;
 		private readonly ApiResponseHandler _responseHandler;
@@ -22,8 +21,7 @@ namespace AppSquareTask.Application.MediatrHandelr.Auth.Register
 
 		public async Task<ApiResponse<AuthResultDto>> Handle(OwnerRegisterCommand request, CancellationToken cancellationToken)
 		{
-			// Call the OwnerRegisterAsync method from the AuthService
-			var authResponse = await _authService.OwnerRegisterAsync(request);
+			var authResponse = await _authService.OwnerRegisterAsync(request.UserName , request.Email , request.Password);
 
 			if (authResponse.Succeeded)
 			{

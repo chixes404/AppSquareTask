@@ -1,6 +1,6 @@
 ﻿using AppSquareTask.Application.Dtos;
 using AppSquareTask.Application.MediatrHandelr.Auth.CustomerRegister;
-using AppSquareTask.Application.MediatrHandelr.Auth.Register;
+using AppSquareTask.Application.MediatrHandelr.Auth.OwnerRegister;
 using AppSquareTask.Application.MediatrHandelr.Boat;
 using AppSquareTask.Application.MediatrHandelr.Boat.Commands.CreateBoat;
 using AppSquareTask.Application.MediatrHandelr.Booking.Queries;
