@@ -35,6 +35,8 @@ namespace AppSquareTask.Api.Controllers
 		}
 
 
+		[Authorize]
+
 		[HttpGet]
 		public async Task<IActionResult> GetAllBoatsPaginated([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
 		{
@@ -48,8 +50,9 @@ namespace AppSquareTask.Api.Controllers
 			return CreateResponse(response);
 		}
 
+		[Authorize("Owner")]
 
-		[HttpPost]
+		[HttpPost("create")]
 		public async Task<IActionResult> CreateBoat([FromBody] CreateBoatCommand command)
 		{
 			var result = await _mediator.Send(command);
@@ -67,7 +70,7 @@ namespace AppSquareTask.Api.Controllers
 
 		[Authorize]
 
-		[HttpGet("{id}")]
+		[HttpGet("get-by-{id}")]
 		public async Task<IActionResult> GetBoatById(int id)
 		{
 			var boat = await _mediator.Send(new GetBoatByIdQuery { Id = id });
@@ -84,7 +87,7 @@ namespace AppSquareTask.Api.Controllers
 
 		[Authorize("Owner")]
 
-		[HttpGet("Owner/{ownerId}")]
+		[HttpGet("get-by-Owner/{ownerId}")]
 		public async Task<IActionResult> GetBoatsByOwner(int ownerId)
 		{
 			var boats = await _mediator.Send(new GetBoatByOwnerQuery { OwnerId = ownerId });
@@ -110,7 +113,7 @@ namespace AppSquareTask.Api.Controllers
 		}
 		[Authorize("Admin")]
 
-		[HttpPost("rejext-boat/{boatId}")]
+		[HttpPost("reject-boat/{boatId}")]
 		public async Task<IActionResult> RejectOBoat(int boatId)
 		{
 			var result = await Mediator.Send(new RejectBoatCommand { BoatId = boatId });

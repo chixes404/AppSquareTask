@@ -74,7 +74,7 @@ namespace AppSquareTask.Application.Services
 				};
 			}
 
-			await _userManager.AddToRoleAsync(user, "Owner");  
+			await _userManager.AddToRoleAsync(user, "Admin");  
 			var wallet = new Wallet
 			{
 				UserId = user.Id,

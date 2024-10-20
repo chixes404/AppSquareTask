@@ -29,9 +29,9 @@ namespace AppSquareTask.Controllers
             _tripService = tripService;
         }
 
-		//[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
 
-		[HttpPost]
+        [HttpPost]
         public async Task<IActionResult> CreateTrip([FromBody] CreateTripCommand command)
         {
             var result = await _mediator.Send(command);
