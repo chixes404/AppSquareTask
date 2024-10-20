@@ -1,6 +1,6 @@
 ﻿using AppSquareTask.Application.IServices;
-using AppSquareTask.Core.IRepositories;
-using AppSquareTask.Core.Models;
+using AppSquareTask.Infrastracture.IRepositories;
+using AppSquareTask.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,5 @@
-﻿using AppSquareTask.Application.MediatrHandelr.AdminManagment.ApproveOwner;
-using AppSquareTask.Application.MediatrHandelr.AdminManagment.RejectOwner;
+﻿using AppSquareTask.Core.MediatrHandelr.AdminManagment.ApproveOwner;
+using AppSquareTask.Core.MediatrHandelr.AdminManagment.RejectOwner;
 using AppSquareTask.Controllers.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

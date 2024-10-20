@@ -1,9 +1,9 @@
 ﻿using AppSquareTask.Application.IServices;
-using AppSquareTask.Application.MediatrHandelr.Booking.Commands.BookBoat;
-using AppSquareTask.Application.MediatrHandelr.Booking.Commands.BookTrip;
-using AppSquareTask.Application.MediatrHandelr.Booking.Commands.CancelBookingBoat;
-using AppSquareTask.Application.MediatrHandelr.Booking.Commands.CancelBookingTrip;
-using AppSquareTask.Core.Models;
+using AppSquareTask.Core.MediatrHandelr.Booking.Commands.BookBoat;
+using AppSquareTask.Core.MediatrHandelr.Booking.Commands.BookTrip;
+using AppSquareTask.Core.MediatrHandelr.Booking.Commands.CancelBookingBoat;
+using AppSquareTask.Core.MediatrHandelr.Booking.Commands.CancelBookingTrip;
+using AppSquareTask.Data.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

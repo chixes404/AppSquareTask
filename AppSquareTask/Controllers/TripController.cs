@@ -1,17 +1,17 @@
 ﻿using AppSquareTask.Application.Dtos;
 using AppSquareTask.Application.IServices;
-using AppSquareTask.Application.MediatrHandelr.Trip.Commands;
-using AppSquareTask.Application.MediatrHandelr.Trip.Queries;
-using AppSquareTask.Application.Responses;
+using AppSquareTask.Core.MediatrHandelr.Trip.Commands;
+using AppSquareTask.Core.MediatrHandelr.Trip.Queries;
+using AppSquareTask.Core.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AppSquareTask.Application.MediatrHandelr.Trip.Commands.CreateTrip;
-using AppSquareTask.Application.MediatrHandelr.Trip.Queries.GetTripById;
-using AppSquareTask.Application.MediatrHandelr.Trip.Queries.GetTripByOwner;
+using AppSquareTask.Core.MediatrHandelr.Trip.Commands.CreateTrip;
+using AppSquareTask.Core.MediatrHandelr.Trip.Queries.GetTripById;
+using AppSquareTask.Core.MediatrHandelr.Trip.Queries.GetTripByOwner;
 using AppSquareTask.Controllers.Base;
-using AppSquareTask.Application.MediatrHandelr.Trip.Queries.GetAllTrips;
+using AppSquareTask.Core.MediatrHandelr.Trip.Queries.GetAllTrips;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AppSquareTask.Controllers

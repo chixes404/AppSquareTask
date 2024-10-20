@@ -1,12 +1,11 @@
 ﻿using AppSquareTask.Application.Dtos;
 using AppSquareTask.Application.IServices;
-using AppSquareTask.Application.MediatrHandelr.Auth.CustomerRegister;
-using AppSquareTask.Application.MediatrHandelr.Auth.Login;
-using AppSquareTask.Core.IRepositories;
-using AppSquareTask.Core.Models;
+
+using AppSquareTask.Infrastracture.IRepositories;
+using AppSquareTask.Data.Models;
 using AppSquareTask.Infrastracture.Configuration;
 using AppSquareTask.Infrastracture.Data;
-using AppSquareTask.Infrastracture.Helper;
+using AppSquareTask.Application.Helper;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -79,7 +78,8 @@ namespace AppSquareTask.Application.Services
 			var wallet = new Wallet
 			{
 				UserId = user.Id,
-				Balance=0
+				Balance=0,
+				CreatedBy = user.Id
 
 			};
 			await _unitOfWork.WalletRepository.CreateAsync(wallet);
@@ -89,6 +89,7 @@ namespace AppSquareTask.Application.Services
 			{
 				UserId = user.Id,
 			
+				CreatedBy = user.Id
 			};
 			await _unitOfWork.OwnerRepository.CreateAsync(owner);
 			await _unitOfWork.SaveAsync();
@@ -104,17 +105,22 @@ namespace AppSquareTask.Application.Services
 
 
 
-		public async Task<AuthResponse> CustomerRegisterAsync(CustomerRegisterCommand model)
+		public async Task<AuthResponse> CustomerRegisterAsync(string username, string email, string password)
 		{
-			if (await _userManager.FindByEmailAsync(model.Email) is not null)
+			if (await _userManager.FindByEmailAsync(email) is not null)
 			{
 				return new AuthResponse { Message = "Email is already registered." };
 			}
 
 
-			var user = _mapper.Map<ApplicationUser>(model);
-			user.Status = Status.Approved;
-			var result = await _userManager.CreateAsync(user, model.Password);
+			var user = new ApplicationUser
+			{
+				UserName = username,
+				Email = email,
+
+			};
+				user.Status = Status.Approved;
+			var result = await _userManager.CreateAsync(user, password);
 
 			if (!result.Succeeded)
 			{
@@ -161,9 +167,9 @@ namespace AppSquareTask.Application.Services
 
 
 
-		public async Task<AuthResponse> LoginAsync(LoginCommand model)
+		public async Task<AuthResponse> LoginAsync(string email , string password )
 		{
-			var user = await _userManager.FindByEmailAsync(model.Email);
+			var user = await _userManager.FindByEmailAsync(email);
 			if (user == null)
 			{
 				return new AuthResponse { Succeeded = false, Message = "Invalid credentials." };
@@ -174,7 +180,7 @@ namespace AppSquareTask.Application.Services
 				return new AuthResponse { Succeeded = false, Message = "Your account is not approved yet." };
 			}
 
-			var passwordValid = await _userManager.CheckPasswordAsync(user, model.Password);
+			var passwordValid = await _userManager.CheckPasswordAsync(user, password);
 			if (!passwordValid)
 			{
 				return new AuthResponse { Succeeded = false, Message = "Invalid credentials." };

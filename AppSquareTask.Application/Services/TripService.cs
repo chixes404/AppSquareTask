@@ -1,8 +1,7 @@
 ﻿using AppSquareTask.Application.Dtos;
 using AppSquareTask.Application.IServices;
-using AppSquareTask.Application.Responses;
-using AppSquareTask.Core.IRepositories;
-using AppSquareTask.Core.Models;
+using AppSquareTask.Infrastracture.IRepositories;
+using AppSquareTask.Data.Models;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -85,21 +84,6 @@ namespace AppSquareTask.Application.Services
 		}
 
 
-		public async Task<PagedList<ResponseTripDto>> GetAllTripsPaginatedAsync(int pageNumber, int pageSize)
-		{
-			var approvedTripsQuery = _unitOfWork.TripRepository.Query()
-				.Where(trip => trip.Status == Status.Approved);
-
-			var totalCount = await approvedTripsQuery.CountAsync();
-
-			var paginatedTrips = await approvedTripsQuery
-				.Skip((pageNumber - 1) * pageSize)
-				.Take(pageSize)
-				.ToListAsync();
-
-			var mappedTrips = paginatedTrips.Select(trip => _mapper.Map<ResponseTripDto>(trip)).ToList();
-
-			return new PagedList<ResponseTripDto>(mappedTrips, pageNumber, pageSize, totalCount);
-		}
+	
 	}
 }

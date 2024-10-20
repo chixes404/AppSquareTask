@@ -1,8 +1,7 @@
 ﻿using AppSquareTask.Application.Dtos;
 using AppSquareTask.Application.IServices;
-using AppSquareTask.Application.Responses;
-using AppSquareTask.Core.IRepositories;
-using AppSquareTask.Core.Models;
+using AppSquareTask.Infrastracture.IRepositories;
+using AppSquareTask.Data.Models;
 using AppSquareTask.Infrastracture.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;

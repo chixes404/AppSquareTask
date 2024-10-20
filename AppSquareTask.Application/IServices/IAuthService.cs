@@ -1,7 +1,6 @@
 ﻿using AppSquareTask.Application.Dtos;
-using AppSquareTask.Application.MediatrHandelr.Auth.CustomerRegister;
-using AppSquareTask.Application.MediatrHandelr.Auth.Login;
-using AppSquareTask.Core.Models;
+
+using AppSquareTask.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +13,8 @@ namespace AppSquareTask.Application.IServices
 	{
 
 		Task<AuthResponse> OwnerRegisterAsync(string username , string email , string password);
-		Task<AuthResponse> CustomerRegisterAsync(CustomerRegisterCommand registerModel);
+		Task<AuthResponse> CustomerRegisterAsync(string username, string email, string password);
 
-		Task<AuthResponse> LoginAsync(LoginCommand model);
+		Task<AuthResponse> LoginAsync( string email, string password);
 	}
 }

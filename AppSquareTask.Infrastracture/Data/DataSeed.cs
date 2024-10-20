@@ -1,4 +1,4 @@
-﻿using AppSquareTask.Core.Models;
+﻿using AppSquareTask.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;

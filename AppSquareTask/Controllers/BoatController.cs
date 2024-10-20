@@ -1,22 +1,22 @@
 ﻿using AppSquareTask.Application.Dtos;
 using AppSquareTask.Application.IServices;
-using AppSquareTask.Application.MediatrHandelr.Boat.Commands;
-using AppSquareTask.Application.MediatrHandelr.Boat.Queries;
-using AppSquareTask.Application.Responses;
+using AppSquareTask.Core.MediatrHandelr.Boat.Commands;
+using AppSquareTask.Core.MediatrHandelr.Boat.Queries;
+using AppSquareTask.Core.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AppSquareTask.Application.MediatrHandelr.Boat.Commands.CreateBoat;
-using AppSquareTask.Application.MediatrHandelr.Boat.Queries.GetBoatById;
-using AppSquareTask.Application.MediatrHandelr.Boat.Queries.GetBoatByOwner;
+using AppSquareTask.Core.MediatrHandelr.Boat.Commands.CreateBoat;
+using AppSquareTask.Core.MediatrHandelr.Boat.Queries.GetBoatById;
+using AppSquareTask.Core.MediatrHandelr.Boat.Queries.GetBoatByOwner;
 using AppSquareTask.Controllers.Base;
-using AppSquareTask.Application.MediatrHandelr.Boat.Queries.GetAllBoats;
-using AppSquareTask.Application.MediatrHandelr.AdminManagment.ApproveOwner;
-using AppSquareTask.Application.MediatrHandelr.AdminManagment.RejectOwner;
-using AppSquareTask.Application.MediatrHandelr.Boat.Commands.ApproveBoat;
-using AppSquareTask.Application.MediatrHandelr.Boat.Commands.RejectBoat;
-using AppSquareTask.Application.MediatrHandelr.Boat;
+using AppSquareTask.Core.MediatrHandelr.Boat.Queries.GetAllBoats;
+using AppSquareTask.Core.MediatrHandelr.AdminManagment.ApproveOwner;
+using AppSquareTask.Core.MediatrHandelr.AdminManagment.RejectOwner;
+using AppSquareTask.Core.MediatrHandelr.Boat.Commands.ApproveBoat;
+using AppSquareTask.Core.MediatrHandelr.Boat.Commands.RejectBoat;
+using AppSquareTask.Core.MediatrHandelr.Boat;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AppSquareTask.Api.Controllers
@@ -34,7 +34,6 @@ namespace AppSquareTask.Api.Controllers
 			_responseHandler = responseHandler;
 		}
 
-		[Authorize]
 
 		[HttpGet]
 		public async Task<IActionResult> GetAllBoatsPaginated([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
@@ -49,7 +48,6 @@ namespace AppSquareTask.Api.Controllers
 			return CreateResponse(response);
 		}
 
-		[Authorize("Owner")]
 
 		[HttpPost]
 		public async Task<IActionResult> CreateBoat([FromBody] CreateBoatCommand command)

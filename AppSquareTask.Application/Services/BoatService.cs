@@ -1,8 +1,7 @@
 ﻿using AppSquareTask.Application.Dtos;
 using AppSquareTask.Application.IServices;
-using AppSquareTask.Application.Responses;
-using AppSquareTask.Core.IRepositories;
-using AppSquareTask.Core.Models;
+using AppSquareTask.Infrastracture.IRepositories;
+using AppSquareTask.Data.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -93,20 +92,7 @@ namespace AppSquareTask.Application.Services
 		}
 
 
-		public async Task<PagedList<ResponseBoatDto>> GetAllBoatsPaginatedAsync(int pageNumber, int pageSize)
-		{
-			var query = _unitOfWork.BoatRepository.Query()
-				.Where(boat => boat.Status == Status.Approved);
-
-			var totalCount = await query.CountAsync(); 
-			var boatsToReturn = await query.Skip((pageNumber - 1) * pageSize)
-										   .Take(pageSize)
-										   .ToListAsync(); 
-
-			var mappedBoats = boatsToReturn.Select(boat => _mapper.Map<ResponseBoatDto>(boat));
-
-			return new PagedList<ResponseBoatDto>(mappedBoats, pageNumber, pageSize, totalCount);
-		}
+		
 
 
 		public async Task<bool> ApproveBoatAsync(int boatId)

@@ -1,5 +1,5 @@
-﻿using AppSquareTask.Core.IRepositories;
-using AppSquareTask.Core.Models.Common;
+﻿using AppSquareTask.Infrastracture.IRepositories;
+using AppSquareTask.Data.Models.Common;
 using AppSquareTask.Infrastracture.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;

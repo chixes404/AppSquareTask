@@ -1,4 +1,4 @@
-﻿using AppSquareTask.Application.Responses;
+﻿using AppSquareTask.Core.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;

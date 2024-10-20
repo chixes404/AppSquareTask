@@ -1,55 +1,37 @@
-using AppSquareTask.Core.Models;
-using AppSquareTask.Infrastracture.Configuration;
+using AppSquareTask.Data.Models;
 using AppSquareTask.Infrastracture.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using M = AppSquareTask.Core.Models;
-
-using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using AppSquareTask.Application.IServices;
-using AppSquareTask.Application.Services;
-using AppSquareTask.Core.IRepositories;
-using AppSquareTask.Infrastracture.Repositories;
-using AppSquareTask.Infrastracture.Hubs;
-using AppSquareTask.Middlewares;
-using static System.Net.Mime.MediaTypeNames;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Hosting;
-using System.Reflection;
-using AppSquareTask.Infrastracture.Helper;
-using AppSquareTask.Application.Responses;
-using FluentValidation.AspNetCore;
-using MediatR;
-using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
-using System.Runtime.Loader;
+using System.Text;
+using AppSquareTask.Application;
+using AppSquareTask.Core;
+using AppSquareTask.Infrastracture;
+using AppSquareTask.Core.Middlewares;
+using M = AppSquareTask.Data.Models;
 using AppSquareTask.Application.Helper;
-using AppSquareTask.Application.MediatrHandelr.Auth.OwnerRegister;
+
+using AppSquareTask.Infrastracture.Configuration;
+using AppSquareTask.Infrastracture.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+	?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 // Register DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 	options.UseSqlServer(connectionString));
 
-	
-
-
-
 // Configure Identity
 builder.Services.AddIdentity<ApplicationUser, M.Role>(options => options.SignIn.RequireConfirmedAccount = false)
-		.AddRoles<M.Role>()
-		.AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("AppSquareProject")
-		.AddEntityFrameworkStores<ApplicationDbContext>()
-		.AddDefaultTokenProviders();
+	.AddRoles<M.Role>()
+	.AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("AppSquareTask")
+	.AddEntityFrameworkStores<ApplicationDbContext>()
+	.AddDefaultTokenProviders();
 
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("Jwt"));
 
@@ -78,31 +60,29 @@ builder.Services.AddAuthentication(options =>
 	};
 });
 
+builder.Services.AddAuthorization();
 
+builder.Services.AddControllers();
 
-builder.Services.AddControllers().
-	AddJsonOptions(options =>
-	{
-		options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-	});// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+void RegisterApplicationServices(IServiceCollection services)
+{
+	services
+		.AddServiceDependencies()
+		.AddCoreDependencies()
+		.AddInfrastructureDependencies();
+}
 
-
-builder.Services.AddSignalR();
-
-
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-
+// Configure Swagger
 builder.Services.AddSwaggerGen(options =>
 {
-	options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "AppSquare API", Version = "v1" });
-	options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+	options.SwaggerDoc("v1", new OpenApiInfo { Title = "App Square API", Version = "v1" });
+	options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
 	{
 		Name = "Authorization",
 		In = ParameterLocation.Header,
 		Type = SecuritySchemeType.ApiKey,
 		Scheme = JwtBearerDefaults.AuthenticationScheme
 	});
-
 
 	options.AddSecurityRequirement(new OpenApiSecurityRequirement
 	{
@@ -123,69 +103,35 @@ builder.Services.AddSwaggerGen(options =>
 	});
 });
 
-
-
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<ApiResponseHandler>();
-builder.Services.AddScoped<JwtTokenGenerator>();
-void RegisterApplicationServices(IServiceCollection services)
-{
-	services
-		.AddServiceDependencies();
-}
-
-
-
-
-
-builder.Services.AddFluentValidationAutoValidation()
-	.AddFluentValidationClientsideAdapters()
-	.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-// Register ValidationBehavior
-//builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
-
-builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
-
-// Register OwnerService
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-
-
-
-builder.Services.AddCors(options =>
-{
-	options.AddPolicy("AllowAll",
-		b => b.AllowAnyMethod()
-	.AllowAnyHeader()
-	.AllowAnyOrigin());
-});
+RegisterApplicationServices(builder.Services);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+
 	app.UseSwagger();
 	app.UseSwaggerUI(c =>
 	{
 		string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
-		c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "AppSquare API");
-	}); ;
+		c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "App Square API");
+	});
 }
+
+app.MapHub<NotificationHub>("/notificationHub");
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
-
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
-	endpoints.MapControllers();
+	endpoints.MapControllers(); 
+	endpoints.MapHub<NotificationHub>("/notificationHub");
 
-	endpoints.MapHub<NotificationHub>("/notificationHub"); 
 });
+
 app.Run();

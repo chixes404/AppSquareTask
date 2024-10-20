@@ -9,7 +9,6 @@ namespace AppSquareTask.Infrastracture.Hubs
 {
 	public class NotificationHub : Hub
 	{
-		// You can define methods for managing connections here if needed
 		public override Task OnConnectedAsync()
 		{
 			return base.OnConnectedAsync();

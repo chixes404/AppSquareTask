@@ -1,12 +1,12 @@
-﻿using AppSquareTask.Application.Responses;
-using AppSquareTask.Application.MediatrHandelr.Auth.CustomerRegister;
-using AppSquareTask.Application.MediatrHandelr.Auth.Login;
+﻿using AppSquareTask.Core.Responses;
+using AppSquareTask.Core.MediatrHandelr.Auth.CustomerRegister;
+using AppSquareTask.Core.MediatrHandelr.Auth.Login;
 using AppSquareTask.Controllers.Base;
-using AppSquareTask.Core.Models;
+using AppSquareTask.Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
-using AppSquareTask.Application.MediatrHandelr.Auth.OwnerRegister;
+using AppSquareTask.Core.MediatrHandelr.Auth.OwnerRegister;
 
 namespace AppSquareTask.Controllers
 {
@@ -14,12 +14,8 @@ namespace AppSquareTask.Controllers
 	[ApiController]
 	public class AuthController : AppControllerBase
 	{
-		private readonly IMediator _mediator;
+		
 
-		public AuthController(IMediator mediator)
-		{
-			_mediator = mediator;
-		}
 		[HttpPost("register-owner")]
 		public async Task<IActionResult> RegisterOwner([FromBody] OwnerRegisterCommand command)
 		{
@@ -31,7 +27,7 @@ namespace AppSquareTask.Controllers
 		[HttpPost("register-customer")]
 		public async Task<IActionResult> RegisterCustomer([FromBody] CustomerRegisterCommand command)
 		{
-			var result = await _mediator.Send(command);
+			var result = await Mediator.Send(command);
 			return CreateResponse(result);
 		}
 
@@ -39,7 +35,7 @@ namespace AppSquareTask.Controllers
 		[HttpPost("login")]
 		public async Task<IActionResult> Login([FromBody] LoginCommand command)
 		{
-			var result = await _mediator.Send(command);
+			var result = await Mediator.Send(command);
 			return CreateResponse(result);
 		}
 

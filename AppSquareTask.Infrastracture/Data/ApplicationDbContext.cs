@@ -1,4 +1,4 @@
-﻿using AppSquareTask.Core.Models;
+﻿using AppSquareTask.Data.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
-using M = AppSquareTask.Core.Models;
+using M = AppSquareTask.Data.Models;
 
 
 namespace AppSquareTask.Infrastracture.Data

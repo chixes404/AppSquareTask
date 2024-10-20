@@ -1,6 +1,5 @@
 ﻿using AppSquareTask.Application.Dtos;
-using AppSquareTask.Application.Responses;
-using AppSquareTask.Core.Models;
+using AppSquareTask.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,6 @@ namespace AppSquareTask.Application.IServices
 	{
 
 		Task<Boat> GetBoatByIdAsync(int boatId);
-		Task<PagedList<ResponseBoatDto>> GetAllBoatsPaginatedAsync(int pageNumber, int pageSize);
 		Task<IEnumerable<ResponseBoatDto>> GetBoatsByOwnerAsync(int ownerId); // New method
 		Task<Boat> CreateBoatAsync(Boat boat); // Return Boat after creation
 		Task<Boat> UpdateBoatAsync(Boat boat); // Return updated Boat
