@@ -14,7 +14,8 @@ namespace AppSquareTask.Application.IServices
 
 		Task<AuthResponse> OwnerRegisterAsync(string username , string email , string password);
 		Task<AuthResponse> CustomerRegisterAsync(string username, string email, string password);
-
+		Task<AuthResponse> AdminRegister(string username, string email, string password);
 		Task<AuthResponse> LoginAsync( string email, string password);
+		Task<AuthResponse> AdminLoginAsync( string email, string password);
 	}
 }

@@ -74,7 +74,7 @@ namespace AppSquareTask.Application.Services
 				};
 			}
 
-			await _userManager.AddToRoleAsync(user, "Admin");  
+			await _userManager.AddToRoleAsync(user, "Owner");  
 			var wallet = new Wallet
 			{
 				UserId = user.Id,
@@ -100,6 +100,45 @@ namespace AppSquareTask.Application.Services
 			{
 				Succeeded = true,
 				Message = $"{user.UserName} registered successfully. Await admin approval."
+			};
+		}
+
+		public async Task<AuthResponse> AdminRegister(string username, string email, string password)
+		{
+			if (await _userManager.FindByEmailAsync(email) is not null)
+			{
+				return new AuthResponse { Message = "Email is already registered." };
+			}
+
+
+			var user = new ApplicationUser
+			{
+				UserName = username,
+				Email = email,
+				CreatedAt = DateTime.UtcNow
+			};
+			user.Status = Status.Approved;
+
+			var result = await _userManager.CreateAsync(user, password);
+
+
+			if (!result.Succeeded)
+			{
+				return new AuthResponse
+				{
+					Succeeded = false,
+					Errors = result.Errors.Select(e => e.Description).ToList(),
+					Message = "Registration failed. See errors for details."
+				};
+			}
+
+			await _userManager.AddToRoleAsync(user, "Admin");
+
+
+			return new AuthResponse
+			{
+				Succeeded = true,
+				Message = $"{user.UserName} registered successfully. "
 			};
 		}
 
@@ -198,6 +237,45 @@ namespace AppSquareTask.Application.Services
 			};
 		}
 
+		public async Task<AuthResponse> AdminLoginAsync(string email, string password)
+		{
+			var user = await _userManager.FindByEmailAsync(email);
+			if (user == null)
+			{
+				return new AuthResponse { Succeeded = false, Message = "Invalid credentials." };
+			}
+
+			if (user.Status != Status.Approved)
+			{
+				return new AuthResponse { Succeeded = false, Message = "Your account is not approved yet." };
+			}
+
+			var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+
+			if (!isAdmin)
+			{
+				return new AuthResponse { Succeeded = false, Message = "Admins only can login." };
+
+			}
+
+
+			var passwordValid = await _userManager.CheckPasswordAsync(user, password);
+			if (!passwordValid)
+			{
+				return new AuthResponse { Succeeded = false, Message = "Invalid credentials." };
+			}
+
+			var token = _jwtTokenGenerator.CreateToken(user);
+			var tokenExpiration = DateTime.Now.AddHours(1);
+
+			return new AuthResponse
+			{
+				Succeeded = true,
+				Token = token,
+				TokenExpiration = tokenExpiration,
+				Message = "Login successful."
+			};
+		}
 
 
 

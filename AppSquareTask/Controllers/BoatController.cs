@@ -50,7 +50,7 @@ namespace AppSquareTask.Api.Controllers
 			return CreateResponse(response);
 		}
 
-		[Authorize("Owner")]
+		[Authorize("Owner , Admin")]
 
 		[HttpPost("create")]
 		public async Task<IActionResult> CreateBoat([FromBody] CreateBoatCommand command)

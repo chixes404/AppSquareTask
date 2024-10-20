@@ -60,7 +60,11 @@ builder.Services.AddAuthentication(options =>
 	};
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+	options.AddPolicy("Owner", policy =>
+		policy.RequireClaim("Role", "Owner")); 
+});
 
 builder.Services.AddControllers();
 
